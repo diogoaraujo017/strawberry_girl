@@ -15,3 +15,5 @@ constroiMapa pecas = undefined
 
 desconstroiMapa :: Mapa -> [(Peca, Coordenadas)]
 desconstroiMapa mapa = undefined
+
+
