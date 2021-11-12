@@ -13,7 +13,7 @@ import LI12122
 
 validaPotencialMapa :: [(Peca, Coordenadas)] -> Bool
 --validaPotencialMapa pecas = undefined
-validaPotencialMapa = undefined 
+validaPotencialMapa m = undefined 
 
 
 validaPosicao :: [(Peca, Coordenadas)] -> Bool
@@ -21,7 +21,19 @@ validaPosicao :: [(Peca, Coordenadas)] -> Bool
 validaPosicao ((p1,(x1,y1)):[]) = True
 validaPosicao ((p1,(x1,y1)):(p2,(x2,y2)):t)
  |x1==x2 && y1==y2 = False
- |otherwise = validaPosicao ((p1,(x1,y1)):t)
+ |otherwise = validaPosicao ((p1,(x1,y1)):t) && validaPosicao ((p2,(x2,y2)):t)
+
+portaValida :: [(Peca, Coordenadas)] -> Bool
+portaValida m
+  |existePorta m == 1 = True
+  |otherwise = False
+
+existePorta :: [(Peca, Coordenadas)] -> Int
+existePorta [] = 0
+existePorta ((Porta, (x,y)):t) = 1 + existePorta t
+existePorta ((Vazio, (x,y)):t) = existePorta t
+existePorta ((Bloco, (x,y)):t) = existePorta t
+existePorta ((Caixa, (x,y)):t) = existePorta t
 
 
- 
+-- [(Porta, (0, 2)),(Bloco, (0, 3)), (Bloco, (1, 3)), (Bloco, (2, 3))]
