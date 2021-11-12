@@ -36,4 +36,3 @@ existePorta ((Bloco, (x,y)):t) = existePorta t
 existePorta ((Caixa, (x,y)):t) = existePorta t
 
 
--- [(Porta, (0, 2)),(Bloco, (0, 3)), (Bloco, (1, 3)), (Bloco, (2, 3))]
