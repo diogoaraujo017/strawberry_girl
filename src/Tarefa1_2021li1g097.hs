@@ -1,3 +1,4 @@
+{-# OPTIONS_GHC -Wno-incomplete-patterns #-}
 {- |
 Module      : Tarefa1_2021li1g097
 Description : Validação de um potencial mapa
@@ -12,12 +13,15 @@ import LI12122
 
 validaPotencialMapa :: [(Peca, Coordenadas)] -> Bool
 --validaPotencialMapa pecas = undefined
-validaPotencialMapa = validaPosicao l
+validaPotencialMapa = undefined 
 
 
 validaPosicao :: [(Peca, Coordenadas)] -> Bool
 --validaPotencialMapa pecas = undefined
-validaPosicao (p1,(x1,y1)):[] = True
-validaPosicao (p1,(x1,y1)):(p2,(x2,y2)):t
+validaPosicao ((p1,(x1,y1)):[]) = True
+validaPosicao ((p1,(x1,y1)):(p2,(x2,y2)):t)
  |x1==x2 && y1==y2 = False
- |otherwise = validaPosicao (p1(,x1,y1)):t
+ |otherwise = validaPosicao ((p1,(x1,y1)):t)
+
+
+ 
