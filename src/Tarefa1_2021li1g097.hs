@@ -45,7 +45,7 @@ caixaValida [] = True
 caixaValida ((Caixa, (x1,y1)):[]) = False
 caixaValida ((Caixa, (x1,y1)):(p, (x2,y2)):t) = case p of Bloco -> (x1 == x2 && y1 == (y2-1)) || caixaValida ((Caixa, (x1,y1)):t)
                                                           Porta -> caixaValida ((Caixa, (x1,y1)):t)
-                                                          Caixa -> if x1 == x2 && y1 == (y2-1) then caixaValida ((p, (x2,y2)):t) else caixaValida ((Caixa, (x1,y1)):t)
+                                                          Caixa -> if x1 == x2 && y1 == (y2-1) then caixaValida ((p, (x2,y2)):t) else caixaValida ((Caixa, (x1,y1)):t) && caixaValida ((p,(x2,y2)):t)
 caixaValida ((p, (x,y)):t) = caixaValida t 
 
 
