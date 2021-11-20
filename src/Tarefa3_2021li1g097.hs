@@ -11,6 +11,4 @@ module Tarefa3_2021li1g097 where
 import LI12122
 
 instance Show Jogo where
-  show = undefined
-
-
+  show = undefined                                     

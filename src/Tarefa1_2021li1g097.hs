@@ -23,9 +23,10 @@ validaPotencialMapa m = validaPosicao m && portaValida m && caixaValida m && exi
 {-Esta função testa se existem peças que têm as mesmas coordenadas.-}  --Done
 validaPosicao :: [(Peca, Coordenadas)] -> Bool
 validaPosicao ((p1,(x1,y1)):[]) = True
-validaPosicao ((p1,(x1,y1)):(p2,(x2,y2)):t)
+validaPosicao l
  |x1==x2 && y1==y2 = False
- |otherwise = validaPosicao ((p1,(x1,y1)):t) && validaPosicao ((p2,(x2,y2)):t)
+ |otherwise = validaPosicao ((p2,(x2,y2)):t)
+ where ((p1,(x1,y1)):(p2,(x2,y2)):t) = ordenaPecas l
 
 --TAREFA 1.2---------------------------------------------------------------------------------------------------------------------------------------
 {-Esta função testa se existe apenas uma porta usando a função existePorta.-}  --Done
@@ -45,11 +46,13 @@ existePorta ((_, (x,y)):t) = existePorta t
 caixaValida :: [(Peca, Coordenadas)] -> Bool
 caixaValida [] = True
 caixaValida ((Caixa, (_,_)):[]) = False
-caixaValida ((Caixa, (x1,y1)):(p, (x2,y2)):t) = case p of Bloco -> (x1 == x2 && y1 == (y2-1)) || caixaValida ((Caixa, (x1,y1)):t)
-                                                          Porta -> caixaValida ((Caixa, (x1,y1)):t)
-                                                          Caixa -> if x1 == x2 && y1 == (y2-1) then caixaValida ((p, (x2,y2)):t) else caixaValida ((Caixa, (x1,y1)):t) && caixaValida ((p,(x2,y2)):(Caixa, (x1,y1)):t)
-                                                          Vazio -> caixaValida ((Caixa,(x1,y1)):t)
-caixaValida ((_,(_,_)):t) = caixaValida t
+caixaValida l = if p1 == Caixa then case p2 of Bloco -> (x1 == x2 && y1 == (y2-1)) || caixaValida ((p1,(x1,y1)):t)
+                                               Porta -> caixaValida ((Caixa, (x1,y1)):t)
+                                               Caixa -> if x1 == x2 && y1 == (y2-1) then caixaValida ((p2, (x2,y2)):t) else caixaValida ((Caixa, (x1,y1)):t) && caixaValida ((p2,(x2,y2)):(p1, (x1,y1)):t)
+                                               Vazio -> caixaValida ((Caixa,(x1,y1)):t)
+                               else caixaValida ((p2,(x2,y2)):t)
+--caixaValida ((_,(_,_)):t) = caixaValida t
+ where ((p1,(x1,y1)):(p2,(x2,y2)):t) = ordenaPecas l
 
 
 --TAREFA 1.4---------------------------------------------------------------------------------------------------------------------------------------
