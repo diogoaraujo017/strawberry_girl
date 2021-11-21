@@ -12,61 +12,35 @@ module Tarefa3_2021li1g097 where
 import LI12122
 import Tarefa2_2021li1g097
 
---[[Vazio, Vazio, Vazio, Vazio, Vazio, Vazio, Bloco],[Vazio, Vazio, Vazio, Vazio, Vazio, Vazio, Bloco],[Porta, Vazio, Vazio, Vazio, Caixa, Vazio, Bloco],[Bloco, Bloco, Bloco, Bloco, Bloco, Bloco, Bloco]]
+-- [[Vazio, Vazio, Vazio, Vazio, Vazio, Vazio, Bloco],[Vazio, Vazio, Vazio, Vazio, Vazio, Vazio, Bloco],[Porta, Vazio, Vazio, Vazio, Caixa, Vazio, Bloco],[Bloco, Bloco, Bloco, Bloco, Bloco, Bloco, Bloco]]
+-- mostrarJogo (Jogo [[Vazio, Vazio, Vazio, Vazio, Vazio, Vazio, Bloco],[Vazio, Vazio, Vazio, Vazio, Vazio, Vazio, Bloco],[Porta, Vazio, Vazio, Vazio, Caixa, Vazio, Bloco],[Bloco, Bloco, Bloco, Bloco, Bloco, Bloco, Bloco]] (Jogador (2,5) Oeste False))
 
+--TAREFA 3
+
+{-
+A função 'mostrarJogo' vai receber um jogo que consiste em um mapa e um jogador
+e vai dar uma lista de strings que representão as linhas do jogo. Para percebemos
+em que posição nos encontramos precisamos de um acomulador (xa,ya) mas, porque a 
+função 'mostrarJogo' não recebe um par de Int para o acomulador, iremos usar uma
+função auxiliar 'mostrarJogoAux'
+-}
 instance Show Jogo where
-  --show = undefined
-
-mostrarJogo :: Mapa -> Jogador -> [String]
-mostrarJogo [] (Jogador (x,y) d b)
-  |d == Este = [">"]
-  |otherwise = ["<"]
-mostrarJogo m (Jogador (x,y) d b) = show1 (0,0) m (Jogador (x,y) d b)
-
-
-show1 :: (Int,Int) -> Mapa -> Jogador -> [String]
-show1 (x1,y1) ([]:t) j = show1 (x1,y1+1) t j
-show1 (x1,y1) (h:t) (Jogador (x2,y2) d b)
- |x1==x2 && y1==y2 = if d==Este then ([">"] ++ show2 (h:t)) else ["<"] ++ show2 (h:t)
- |otherwise = show1 (x1+1,y1) ((tail h) :t) (Jogador (x2,y2) d b)
-
-show2 :: Mapa -> [String]
-show2 (h:t) = descreveLinha h : show2 t
-  where descreveLinha :: [Peca] -> String
-        descreveLinha [] = ""
-        descreveLinha (a:b) = (case a of Bloco -> "X"
-                                         Porta -> "P"
-                                         Caixa -> "C"
-                                         Vazio -> " ") ++ descreveLinha b
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+mostrarJogo :: Jogo -> [String]
+mostrarJogo (Jogo m (Jogador cord direc b)) = mostrarJogoAux (0,0) (Jogo m (Jogador cord direc b))
 
 {-
 
-showJogo1 :: Jogo -> [String]
-showJogo1 [] = []
-showJogo1 m j = insereJogador j 
-
-
-
-
-insereJogador :: Jogador -> Jogo
-insereJogador (Jogador (x,y) d b) ( = 
-insereJogador (Jogador (x,y) d b) 
-
 -}
+mostrarJogoAux :: (Int,Int) -> Jogo -> [String]
+mostrarJogoAux (_,_) (Jogo [] _) = []
+mostrarJogoAux (xa,ya) (Jogo (m:ms) (Jogador cord direc b)) = descreveLinha (0,ya) (Jogador cord direc b) m : mostrarJogoAux (0,ya+1) (Jogo ms (Jogador cord direc b))
+                                                            where descreveLinha :: (Int,Int) -> Jogador -> [Peca] -> String
+                                                                  descreveLinha (xad,yad) (Jogador cord direc b) [] = ""
+                                                                  descreveLinha (xad,yad) (Jogador cord direc b) (Vazio:t)
+                                                                   |xad==fst cord && yad==snd cord = (case direc of Oeste -> "<"
+                                                                                                                    Este -> ">") ++ descreveLinha (xad+1,yad) (Jogador cord direc b) t
+                                                                   |otherwise = " " ++ descreveLinha (xad+1,yad) (Jogador cord direc b) t
+                                                                  descreveLinha (xad,yad) (Jogador cord direc b) (a:t) = (case a of Bloco -> "X"
+                                                                                                                                    Porta -> "P"
+                                                                                                                                    Caixa -> "C") ++ descreveLinha (xad+1,yad) (Jogador cord direc b) t
+                                                                                                                                    
