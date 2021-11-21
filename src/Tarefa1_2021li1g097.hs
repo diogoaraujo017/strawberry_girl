@@ -22,7 +22,7 @@ validaPotencialMapa m = validaPosicao m && portaValida m && caixaValida m && exi
 --TAREFA 1.1---------------------------------------------------------------------------------------------------------------------------------------
 {-Esta função testa se existem peças que têm as mesmas coordenadas.-}  --Done
 validaPosicao :: [(Peca, Coordenadas)] -> Bool
-validaPosicao ((p1,(x1,y1)):[]) = True
+validaPosicao [(p1,(x1,y1))] = True
 validaPosicao l
  |x1==x2 && y1==y2 = False
  |otherwise = validaPosicao ((p2,(x2,y2)):t)
@@ -45,7 +45,7 @@ existePorta ((_, (x,y)):t) = existePorta t
 {-Esta função testa se as caixas estão propriamente colocadas no mapa, dando o valor de False se existirem caixas a flutuar.-}  --Done
 caixaValida :: [(Peca, Coordenadas)] -> Bool
 caixaValida [] = True
-caixaValida ((Caixa, (_,_)):[]) = False
+caixaValida [(Caixa, (_,_))] = False
 caixaValida l = if p1 == Caixa then case p2 of Bloco -> (x1 == x2 && y1 == (y2-1)) || caixaValida ((p1,(x1,y1)):t)
                                                Porta -> caixaValida ((Caixa, (x1,y1)):t)
                                                Caixa -> if x1 == x2 && y1 == (y2-1) then caixaValida ((p2, (x2,y2)):t) else caixaValida ((Caixa, (x1,y1)):t) && caixaValida ((p2,(x2,y2)):(p1, (x1,y1)):t)
@@ -60,7 +60,7 @@ caixaValida l = if p1 == Caixa then case p2 of Bloco -> (x1 == x2 && y1 == (y2-1
 existeVazio :: [(Peca, Coordenadas)] -> Bool
 existeVazio [] = False
 existeVazio l
-  |p1 == Vazio = True 
+  |p1 == Vazio = True
   |y1 == y2 && (abs(x1-x2)>1) = True
   |y1 /= y2 = existeVazio ((p2,(x2,y2)):t)
   where (p1,(x1,y1)):(p2,(x2,y2)):t = ordenaPecas l
@@ -88,13 +88,13 @@ chaoContinuo (p1,(x1,y1)) l
   where z = ordenaPecas l
 
 {-Esta função calcula o x maximo do mapa-}
-xMax :: [(Peca, Coordenadas)] -> Int 
-xMax [] = undefined 
-xMax ((p1,(x1,y1)):[]) = x1
+xMax :: [(Peca, Coordenadas)] -> Int
+xMax [] = undefined
+xMax [(p1,(x1,y1))] = x1
 xMax ((p1,(x1,y1)):(p2,(x2,y2)):t)
  |x1 >= x2 = xMax ((p1,(x1,y1)):t)
  |otherwise = xMax ((p2,(x2,y2)):t)
- 
+
 
 {-Esta função da output a primeira coluna-}
 colunaUmBlocos :: [(Peca, Coordenadas)] -> [(Peca, Coordenadas)]
@@ -105,22 +105,11 @@ colunaUmBlocos l
  where ((p1,(x1,y1)):t) = ordenaPecas l
 
 {-Esta função encontra qual a ultima peça em x=1.-}
-maiorY :: [(Peca, Coordenadas)] ->  (Peca, Coordenadas) 
-maiorY (h:[]) = h
-maiorY l 
- |null t = undefined 
+maiorY :: [(Peca, Coordenadas)] ->  (Peca, Coordenadas)
+maiorY [h] = h
+maiorY l
+ |null t = undefined
  |otherwise = maiorY t
  where t = colunaUmBlocos l
 
 --TAREFA CONCLUIDA!!
-       
-
-
-
-
-
-
-
-
-
-
