@@ -56,15 +56,18 @@ caixaValida l = if p1 == Caixa then case p2 of Bloco -> (x1 == x2 && y1 == (y2-1
 
 
 --TAREFA 1.4---------------------------------------------------------------------------------------------------------------------------------------
-{-Esta função testa se existe pelo menos um espaço vazio no mapa.-} --buuugggg
+{-Esta função testa se existe pelo menos um espaço vazio no mapa.-} 
 existeVazio :: [(Peca, Coordenadas)] -> Bool
 existeVazio [] = False
-existeVazio l
-  |p1 == Vazio = True
-  |y1 == y2 && (abs(x1-x2)>1) = True
-  |y1 /= y2 = existeVazio ((p2,(x2,y2)):t)
-  where (p1,(x1,y1)):(p2,(x2,y2)):t = ordenaPecas l
+existeVazio ps = length ps /= (xMax ps + 1)*(yMax ps + 1)  
 
+{-Esta função calcula o x maximo do mapa-}
+yMax :: [(Peca, Coordenadas)] -> Int
+yMax [] = 0
+yMax [(p1,(x1,y1))] = y1
+yMax ((p1,(x1,y1)):(p2,(x2,y2)):t)
+ |y1 >= y2 = yMax ((p1,(x1,y1)):t)
+ |otherwise = yMax ((p2,(x2,y2)):t)
 
 {-Esta função ordena o mapa-} --Done
 ordenaPecas :: [(Peca, Coordenadas)] -> [(Peca, Coordenadas)]
@@ -89,7 +92,7 @@ chaoContinuo (p1,(x1,y1)) l
 
 {-Esta função calcula o x maximo do mapa-}
 xMax :: [(Peca, Coordenadas)] -> Int
-xMax [] = undefined
+xMax [] = 0
 xMax [(p1,(x1,y1))] = x1
 xMax ((p1,(x1,y1)):(p2,(x2,y2)):t)
  |x1 >= x2 = xMax ((p1,(x1,y1)):t)

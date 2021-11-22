@@ -1,5 +1,5 @@
-{-# OPTIONS_GHC -Wno-incomplete-patterns #-}
 {-# OPTIONS_GHC -Wno-overlapping-patterns #-}
+{-# OPTIONS_GHC -Wno-incomplete-patterns #-}
 {- |
 Module      : Tarefa2_2021li1g097
 Description : Construção/Desconstrução do mapa
@@ -16,41 +16,53 @@ import Tarefa1_2021li1g097 (ordenaPecas,xMax)
 {-Esta função pega numa lista de peças e coordenadas e tranforma essa lista num mapa.-}
 constroiMapa :: [(Peca, Coordenadas)] -> Mapa
 constroiMapa [] = []
-constroiMapa l = mapaFinal l (colocaPeca (0,0) l)
+constroiMapa l = mapaFinal l (colocaPeca (0,0) l l)
 
-{-Esta função recebe um par de inteiros que ditam a posição em que vamos e recebe uma lista de pecas e coordenadas e tranforma essa lista numa lista de peças em ordem com os respetivos vazios nas devidsa cordenadas.-}
-colocaPeca :: (Int,Int) -> [(Peca, Coordenadas)] -> [Peca]
-colocaPeca (_,_) [] = []
-colocaPeca (x,y) l
- |x==x1 && y==y1 = p1:colocaPeca (x+1,y) t
- |x/=x1 && y==y1 = Vazio:colocaPeca (x+1,y) ((p1,(x1,y1)):t)
- |y/=y1 = colocaPeca (0,y+1) ((p1,(x1,y1)):t)
+{-Esta função recebe um par de inteiros que ditam a posição em que vamos e recebe uma 
+lista de pecas e coordenadas e tranforma essa lista numa lista de peças em ordem com 
+os respetivos vazios nas devidsa cordenadas.-}
+colocaPeca :: (Int,Int) -> [(Peca, Coordenadas)] -> [(Peca, Coordenadas)] -> [Peca]
+colocaPeca (x,y) [] l
+ |x > m = []
+ |otherwise = Vazio:colocaPeca (x+1,y) [] l
+ where m = xMax l
+colocaPeca (x,y) l l1
+ |x==x1 && y==y1 = p1:colocaPeca (x+1,y) t l1
+ |x/=x1 && y==y1 = Vazio:colocaPeca (x+1,y) ((p1,(x1,y1)):t) l1
+ |y/=y1 && x<xm  = Vazio:colocaPeca (x+1,y) ((p1,(x1,y1)):t) l1
+ |y/=y1 && x==xm = Vazio:colocaPeca (0,y+1) ((p1,(x1,y1)):t) l1
+ |y/=y1 && x>xm = colocaPeca (0,y+1) ((p1,(x1,y1)):t) l1
  where (p1,(x1,y1)):t = ordenaPecas l
-
+       xm = xMax l1
+      
 {-Esta função tranforma uma lista peças no respetivo mapa.-}
 mapaFinal :: [(Peca, Coordenadas)] -> [Peca] -> Mapa
 mapaFinal l [] = []
 mapaFinal l m = (takePecas (xMax l+1) m):mapaFinal l (removePecas (xMax l+1) m)
 
-{-Esta funçao obtem a primeira linha do mapa final atraves da lista de peças ordenadas pela funçao colocaPecas-}
+{-Esta funçao obtem a primeira linha do mapa final atraves da lista de peças ordenadas
+pela funçao colocaPecas-}
 takePecas :: Int -> [Peca] -> [Peca]
 takePecas _ [] = []
 takePecas 0 l  = []
 takePecas x (h:t) = h:(takePecas (x-1) t)
 
-{-Esta funçao remove a primeira linha do mapa final atraves da lista de peças ordenadas pela funçao colocaPecas-}
+{-Esta funçao remove a primeira linha do mapa final atraves da lista de peças ordenadas 
+pela funçao colocaPecas-}
 removePecas :: Int -> [Peca] -> [Peca]
 removePecas _ [] = []
 removePecas 0 m = m
 removePecas x (h:t) = removePecas (x-1) t
 
 --TAREFA 2.2-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-{-Esta função pega num Mapa e tranforma esse mapa na lista das coordenadas ocultando os vazios-}
+{-Esta função pega num Mapa e tranforma esse mapa na lista das coordenadas ocultando os 
+vazios-}
 desconstroiMapa :: Mapa -> [(Peca, Coordenadas)]
 desconstroiMapa [] = []
 desconstroiMapa m = somaPos (0,0) m
 
-{-Esta função pega num par de inteiros e num Mapa e tranforma esse mapa na lista das coordenadas começando na coordenada defenida no par de inteiros ocultando os vazios-}
+{-Esta função pega num par de inteiros e num Mapa e tranforma esse mapa na lista das 
+coordenadas começando na coordenada defenida no par de inteiros ocultando os vazios-}
 somaPos :: (Int,Int) -> Mapa -> [(Peca, Coordenadas)]
 somaPos (_,_) [] = []
 somaPos (x,y) ([]:t) = somaPos (0,y+1) t
