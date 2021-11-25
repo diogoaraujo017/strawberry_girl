@@ -50,6 +50,3 @@ descreveLinha (x,y) (Jogador c d b) (a:t) = (case a of Bloco -> "X"
 
 
 
-
-
-

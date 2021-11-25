@@ -1,4 +1,5 @@
 {-# OPTIONS_GHC -Wno-incomplete-patterns #-}
+{-# OPTIONS_GHC -Wno-overlapping-patterns #-}
 
 {- |
 Module      : Tarefa1_2021li1g097
@@ -56,10 +57,18 @@ caixaValida l = if p1 == Caixa then case p2 of Bloco -> (x1 == x2 && y1 == (y2-1
 
 
 --TAREFA 1.4---------------------------------------------------------------------------------------------------------------------------------------
-{-Esta função testa se existe pelo menos um espaço vazio no mapa.-} 
+{-Esta função testa se existe pelo menos um espaço vazio no mapa.-}
 existeVazio :: [(Peca, Coordenadas)] -> Bool
 existeVazio [] = False
-existeVazio ps = length ps /= (xMax ps + 1)*(yMax ps + 1)  
+existeVazio ((p,(x,y)):t) = length z /= (xMax z + 1)*(yMax z + 1) || p == Vazio || existeVazio1 t
+ where z = (p,(x,y)):t
+
+{-Esta função testa se existe pelo menos um espaço vazio declarado no mapa.-}
+existeVazio1 :: [(Peca, Coordenadas)] -> Bool
+existeVazio1 [] = False
+existeVazio1 ((Vazio,(x,y)):t) = True 
+existeVazio1 ((_,(_,_)):t) = existeVazio1 t
+
 
 {-Esta função calcula o x maximo do mapa-}
 yMax :: [(Peca, Coordenadas)] -> Int
@@ -84,9 +93,9 @@ chaoContinuo :: (Peca,Coordenadas) -> [(Peca, Coordenadas)] -> Bool
 chaoContinuo _ [] = True
 chaoContinuo (p1,(x1,y1)) l
   |x1 == xMax z = True
-  |elem (p1,(x1+1,y1)) z = chaoContinuo (p1,(x1+1,y1)) z
-  |elem (p1,(x1,y1-1)) z = chaoContinuo (p1,(x1,y1-1)) z
-  |elem (p1,(x1,y1+1)) z = chaoContinuo (p1,(x1,y1+1)) z
+  |(p1,(x1+1,y1)) `elem` z = chaoContinuo (p1,(x1+1,y1)) z
+  |(p1,(x1,y1-1)) `elem` z = chaoContinuo (p1,(x1,y1-1)) z
+  |(p1,(x1,y1+1)) `elem` z = chaoContinuo (p1,(x1,y1+1)) z
   |otherwise = False
   where z = ordenaPecas l
 
@@ -107,12 +116,12 @@ colunaUmBlocos l
  |otherwise = colunaUmBlocos t
  where ((p1,(x1,y1)):t) = ordenaPecas l
 
-{-Esta função encontra qual a ultima peça em x=1.-}
+{-Esta função encontra qual a ultima peça em x=0.-}
 maiorY :: [(Peca, Coordenadas)] ->  (Peca, Coordenadas)
 maiorY [h] = h
 maiorY l
  |null t = undefined
- |otherwise = maiorY t
+ |otherwise = last t
  where t = colunaUmBlocos l
 
 --TAREFA CONCLUIDA!!

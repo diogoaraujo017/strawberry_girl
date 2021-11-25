@@ -16,7 +16,17 @@ import Tarefa1_2021li1g097 (ordenaPecas,xMax)
 {-Esta função pega numa lista de peças e coordenadas e tranforma essa lista num mapa.-}
 constroiMapa :: [(Peca, Coordenadas)] -> Mapa
 constroiMapa [] = []
-constroiMapa l = mapaFinal l (colocaPeca (0,0) l l)
+constroiMapa l = mapaFinal z (colocaPeca (0,0) z z)
+  where z = removePecasIguais l
+
+{-Esta função pega numa lista de peças e coordenadas e retira uma das posições iguas num mapa, se existirem.-}
+removePecasIguais :: [(Peca, Coordenadas)] -> [(Peca, Coordenadas)]
+removePecasIguais [] = []
+removePecasIguais [(p,(x,y))] = [(p,(x,y))]
+removePecasIguais l 
+ |p1 == p1 && x1==x2 && y1==y2 = removePecasIguais ((p1,(x1,y1)):t)
+ |otherwise = (p1,(x1,y1)):removePecasIguais ((p2,(x2,y2)):t)
+ where (p1,(x1,y1)):(p2,(x2,y2)):t = ordenaPecas l
 
 {-Esta função recebe um par de inteiros que ditam a posição em que vamos e recebe uma 
 lista de pecas e coordenadas e tranforma essa lista numa lista de peças em ordem com 
