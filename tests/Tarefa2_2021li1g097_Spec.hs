@@ -18,13 +18,11 @@ testsT2 =
     , "Tarefa 2 - Teste Identidade m2" ~: sort m2 ~=?  sort (desconstroiMapa (constroiMapa m2))
     , "Tarefa 2 - Teste Construir Mapa m2" ~: m2r ~=? constroiMapa m2
     , "Tarefa 2 - Teste Desconstruir Mapa m2" ~: sort m2 ~=?  sort (desconstroiMapa m2r)
-    , "Tarefa 2 - Teste Identidade m2" ~: sort m2 ~=?  sort (desconstroiMapa (constroiMapa m2))
     , "Tarefa 2 - Teste Identidade m2r" ~: m2r ~=?  constroiMapa (desconstroiMapa m2r)
     , "Tarefa 2 - Teste Construir Mapa m3" ~: m3r ~=? constroiMapa m3
     , "Tarefa 2 - Teste Desconstruir Mapa m3" ~: sort m3 ~=?  sort (desconstroiMapa m3r)
     , "Tarefa 2 - Teste Identidade m3" ~: sort m3 ~=?  sort (desconstroiMapa (constroiMapa m3))
     , "Tarefa 2 - Teste Identidade m3r" ~: m3r ~=?  constroiMapa (desconstroiMapa m3r)
-    , "Tarefa 2 - Teste Identidade m3" ~: sort m3 ~=?  sort (desconstroiMapa (constroiMapa m3))
     ]
 
 

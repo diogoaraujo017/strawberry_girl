@@ -81,8 +81,8 @@ m2r =
 m2e1 :: Jogo
 m2e1 = Jogo m2r (Jogador (12, 8) Oeste False)
 
-m2e1 :: Jogo
-m2e1 = Jogo m2r (Jogador (20,8) Este False)
+m2e2 :: Jogo
+m2e2 = Jogo m2r (Jogador (20,8) Este False)
 
 m3 :: [(Peca, Coordenadas)]
 m3 =

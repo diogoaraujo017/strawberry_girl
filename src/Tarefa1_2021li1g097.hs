@@ -26,6 +26,7 @@ validaPosicao :: [(Peca, Coordenadas)] -> Bool
 validaPosicao [(p1,(x1,y1))] = True
 validaPosicao l
  |x1==x2 && y1==y2 = False
+ |x1<0 || y1<0 = False
  |otherwise = validaPosicao ((p2,(x2,y2)):t)
  where ((p1,(x1,y1)):(p2,(x2,y2)):t) = ordenaPecas l
 
@@ -125,3 +126,6 @@ maiorY l
  where t = colunaUmBlocos l
 
 --TAREFA CONCLUIDA!!
+
+
+ 
