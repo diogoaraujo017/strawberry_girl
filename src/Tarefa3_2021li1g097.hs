@@ -28,9 +28,7 @@ função 'mostrarJogo' não recebe um par de Int para o acomulador, iremos usar 
 função auxiliar 'mostrarJogoAux'
 -}
 instance Show Jogo where
-
-mostrarJogo :: Jogo -> String
-mostrarJogo (Jogo m (Jogador c d b)) = mostrarJogoAux (0,0) (Jogo m (Jogador c d b))
+  show (Jogo m (Jogador c d b)) = mostrarJogoAux (0,0) (Jogo m (Jogador c d b))
 
 {--}
 mostrarJogoAux :: (Int,Int) -> Jogo -> String
@@ -49,7 +47,3 @@ descreveLinha (x,y) (Jogador c d b) (a:t) = (case a of Bloco -> "X"
                                                        Caixa -> "C") ++ descreveLinha (x+1,y) (Jogador c d b) t
 
 --TAREFA CONCLUIDA !!!!!!
-
-
-
-
