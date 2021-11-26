@@ -45,18 +45,18 @@ existePorta ((_, (x,y)):t) = existePorta t
 
 --TAREFA 1.3---------------------------------------------------------------------------------------------------------------------------------------
 {-Esta função testa se as caixas estão propriamente colocadas no mapa, dando o valor de False se existirem caixas a flutuar.-}  --Done
-caixaValida :: [(Peca, Coordenadas)] -> Bool
+caixaValida :: [(Peca,Coordenadas)] -> Bool
 caixaValida [] = True
 caixaValida [(Caixa, (_,_))] = False
-caixaValida l = if p1 == Caixa then case p2 of Bloco -> (x1 == x2 && y1 == (y2-1)) || caixaValida ((p1,(x1,y1)):t)
-                                               Porta -> caixaValida ((Caixa, (x1,y1)):t)
-                                               Caixa -> if x1 == x2 && y1 == (y2-1) then caixaValida ((p2, (x2,y2)):t) else caixaValida ((Caixa, (x1,y1)):t) && caixaValida ((p2,(x2,y2)):(p1, (x1,y1)):t)
-                                               Vazio -> caixaValida ((Caixa,(x1,y1)):t)
-                               else caixaValida ((p2,(x2,y2)):t)
---caixaValida ((_,(_,_)):t) = caixaValida t
- where ((p1,(x1,y1)):(p2,(x2,y2)):t) = ordenaPecas l
+caixaValida p = if p1 == Caixa then (case p2 of Bloco -> (x1 == x2 && y1 == (y2-1)) || caixaValida ((p1,(x1,y1)):t)
+                                                Porta -> caixaValida ((Caixa,(x1,y1)):t)
+                                                Caixa -> if x1 == x2 && y1 == (y2-1) then caixaValida ((p2,(x2,y2)):t) 
+                                                                                     else caixaValida ((p1,(x1,y1)):t) && caixaValida ((p2,(x2,y2)):t)
+                                                Vazio -> caixaValida ((Caixa,(x1,y1)):t))
+                                    else caixaValida ((p2,(x2,y2)):t)
+  where ((p1,(x1,y1)):(p2,(x2,y2)):t) = ordenaPecas p
 
-
+  
 --TAREFA 1.4---------------------------------------------------------------------------------------------------------------------------------------
 {-Esta função testa se existe pelo menos um espaço vazio no mapa.-}
 existeVazio :: [(Peca, Coordenadas)] -> Bool
@@ -69,7 +69,6 @@ existeVazio1 :: [(Peca, Coordenadas)] -> Bool
 existeVazio1 [] = False
 existeVazio1 ((Vazio,(x,y)):t) = True 
 existeVazio1 ((_,(_,_)):t) = existeVazio1 t
-
 
 {-Esta função calcula o x maximo do mapa-}
 yMax :: [(Peca, Coordenadas)] -> Int
@@ -92,13 +91,15 @@ ordenaPecas (h:t) = inserePeca h (ordenaPecas t)
 {-Esta função testa se existe um chão continuo-}  --Done
 chaoContinuo :: (Peca,Coordenadas) -> [(Peca, Coordenadas)] -> Bool
 chaoContinuo _ [] = True
-chaoContinuo (p1,(x1,y1)) l
-  |x1 == xMax z = True
-  |(p1,(x1+1,y1)) `elem` z = chaoContinuo (p1,(x1+1,y1)) z
-  |(p1,(x1,y1-1)) `elem` z = chaoContinuo (p1,(x1,y1-1)) z
-  |(p1,(x1,y1+1)) `elem` z = chaoContinuo (p1,(x1,y1+1)) z
-  |otherwise = False
-  where z = ordenaPecas l
+chaoContinuo (Bloco,(x1,y1)) l
+  |x1 == xMax l = True
+  |(Bloco,(x1+1,y1)) == (p2,(x2,y2)) = chaoContinuo (Bloco,(x1+1,y1)) t
+  |(Bloco,(x1,y1-1)) == (p2,(x2,y2)) = chaoContinuo (Bloco,(x1,y1-1)) t
+  |(Bloco,(x1,y1+1)) == (p2,(x2,y2)) = chaoContinuo (Bloco,(x1,y1+1)) t
+  |(Bloco,(x1+1,y1+1)) == (p2,(x2,y2)) = chaoContinuo (Bloco,(x1+1,y1+1)) t
+  |(Bloco,(x1+1,y1-1)) == (p2,(x2,y2)) = chaoContinuo (Bloco,(x1+1,y1-1)) t
+  |otherwise = chaoContinuo (Bloco,(x1,y1)) t
+  where ((p2,(x2,y2)):t)= ordenaPecas l
 
 {-Esta função calcula o x maximo do mapa-}
 xMax :: [(Peca, Coordenadas)] -> Int

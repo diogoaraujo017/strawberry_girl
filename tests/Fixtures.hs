@@ -123,7 +123,3 @@ m3e1 = Jogo m3r (Jogador (9,6) Oeste False)
 
 m3e2 :: Jogo 
 m3e2 = Jogo m3r (Jogador (17,3) Este False)
-
-
-
-  

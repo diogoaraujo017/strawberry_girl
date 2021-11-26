@@ -23,7 +23,7 @@ constroiMapa l = mapaFinal z (colocaPeca (0,0) z z)
 removePecasIguais :: [(Peca, Coordenadas)] -> [(Peca, Coordenadas)]
 removePecasIguais [] = []
 removePecasIguais [(p,(x,y))] = [(p,(x,y))]
-removePecasIguais l 
+removePecasIguais l
  |p1 == p1 && x1==x2 && y1==y2 = removePecasIguais ((p1,(x1,y1)):t)
  |otherwise = (p1,(x1,y1)):removePecasIguais ((p2,(x2,y2)):t)
  where (p1,(x1,y1)):(p2,(x2,y2)):t = ordenaPecas l
@@ -44,18 +44,18 @@ colocaPeca (x,y) l l1
  |y/=y1 && x>xm = colocaPeca (0,y+1) ((p1,(x1,y1)):t) l1
  where (p1,(x1,y1)):t = ordenaPecas l
        xm = xMax l1
-      
+
 {-Esta função tranforma uma lista peças no respetivo mapa.-}
 mapaFinal :: [(Peca, Coordenadas)] -> [Peca] -> Mapa
 mapaFinal l [] = []
-mapaFinal l m = (takePecas (xMax l+1) m):mapaFinal l (removePecas (xMax l+1) m)
+mapaFinal l m = takePecas (xMax l+1) m:mapaFinal l (removePecas (xMax l+1) m)
 
 {-Esta funçao obtem a primeira linha do mapa final atraves da lista de peças ordenadas
 pela funçao colocaPecas-}
 takePecas :: Int -> [Peca] -> [Peca]
 takePecas _ [] = []
 takePecas 0 l  = []
-takePecas x (h:t) = h:(takePecas (x-1) t)
+takePecas x (h:t) = h:takePecas (x-1) t
 
 {-Esta funçao remove a primeira linha do mapa final atraves da lista de peças ordenadas 
 pela funçao colocaPecas-}
@@ -82,12 +82,12 @@ somaPos (x,y) ((p:ps):t) = case p of Vazio -> somaPos (x+1,y) (ps:t)
 {-Esta função pega num Mapa e tranforma esse mapa na lista das coordenadas sem ocultar os vazios-}
 desconstroiMapa2 :: Mapa -> [(Peca, Coordenadas)]
 desconstroiMapa2 [] = []
-desconstroiMapa2 m = somaPos (0,0) m
+desconstroiMapa2 m = somaPos2 (0,0) m
 
 {-Esta função pega num par de inteiros e num Mapa e tranforma esse mapa na lista das coordenadas começando na coordenada defenida no par de inteiros sem ocultar os vazios-}
 somaPos2 :: (Int,Int) -> Mapa -> [(Peca, Coordenadas)]
 somaPos2 (_,_) [] = []
-somaPos2 (x,y) ([]:t) = somaPos (0,y+1) t
-somaPos2 (x,y) ((p:ps):t) = (p,(x,y)):somaPos (x+1,y) (ps:t)
+somaPos2 (x,y) ([]:t) = somaPos2 (0,y+1) t
+somaPos2 (x,y) ((p:ps):t) = (p,(x,y)):somaPos2 (x+1,y) (ps:t)
 
 --TAREFA CONCLUIDA !!!!!!
