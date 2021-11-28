@@ -20,7 +20,3 @@ testsT1 =
     , "Tarefa 1 - Teste Valida Mapa sem um chao continuo" ~: validaPotencialMapa [(Porta, (0, 2)),(Bloco, (0, 3)),(Bloco, (1, 3)),(Bloco, (3, 3)),(Caixa, (4, 2)),(Bloco, (4, 4)),(Bloco, (5, 4)),(Bloco, (6, 0)),(Bloco, (6, 1)),(Bloco, (6, 2)),(Bloco,(6,3))] ~=? False 
     , "Tarefa 1 - Teste Valida Mapa com mapa valido com vazios indicados" ~: validaPotencialMapa [(Vazio,(0,0)),(Vazio,(1,0)),(Vazio,(2,0)),(Vazio,(3,0)),(Vazio,(4,0)),(Vazio,(5,0)),(Bloco,(6,0)),(Vazio,(0,1)),(Vazio,(1,1)),(Vazio,(2,1)),(Vazio,(3,1)),(Vazio,(4,1)),(Vazio,(5,1)),(Bloco,(6,1)),(Porta,(0,2)),(Vazio,(1,2)),(Vazio,(2,2)),(Vazio,(3,2)),(Caixa,(4,2)),(Vazio,(5,2)),(Bloco,(6,2)),(Bloco,(0,3)),(Bloco,(1,3)),(Bloco,(2,3)),(Bloco,(3,3)),(Bloco,(4,3)),(Bloco,(5,3)),(Bloco,(6,3))] ~=? True
     ]
-
-
-
-  
