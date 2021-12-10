@@ -16,7 +16,7 @@ testsT4 =
     , "Tarefa 4 - Teste movimentos m1e2 Caixa1" ~: Jogo
         [ [Vazio, Vazio, Vazio, Vazio, Vazio, Vazio, Vazio]
         , [Vazio, Vazio, Vazio, Vazio, Vazio, Vazio, Bloco]
-        , [Vazio, Vazio, Vazio, Vazio, Vazio, Vazio, Bloco]
+        , [Vazio, Vazio, Vazio, Caixa, Vazio, Vazio, Bloco]
         , [Porta, Vazio, Vazio, Vazio, Vazio, Vazio, Bloco]
         , [Bloco, Bloco, Bloco, Bloco, Bloco, Bloco, Bloco]
         ]

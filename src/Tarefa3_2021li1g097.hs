@@ -1,4 +1,5 @@
 {-# OPTIONS_GHC -Wno-incomplete-patterns #-}
+{-# OPTIONS_GHC -Wno-overlapping-patterns #-}
 {- |
 Module      : Tarefa3_2021li1g097
 Description : Representação textual do jogo
@@ -61,6 +62,11 @@ mostrarJogoAux (x,y) (Jogo (m:ms) (Jogador c d b)) = descreveLinha (0,y) (Jogado
 {- | A função 'descreverLinha' descreve uma linha de um jogo onde o jogador tem o valor de "<" (se estiver virado para Oeste) ou ">" 
  (se estiver virado para Este), as caixas o valor de "X", a porta de "P" e as caixas de "C".
 
+ Esta função utiliza um acumulador para ter a informação de quando colocar o jogador, pois compara as coordenadas do acumulador 
+ com as coordenadas do jogador, sendo assim capaz de o colocar de uma forma certa.
+
+ Se a posição do jogador coincidir com a posição da porta temos que nessa posição ira ficar o jogador.
+
 == Exemplos de utilização:
 
 >>> descreverLinha
@@ -73,6 +79,10 @@ descreveLinha (x,y) (Jogador (x1,y1) d b) (Vazio:t)
  |x==x1 && y==y1 = (case d of Oeste -> "<"
                               Este  -> ">") ++ descreveLinha (x+1,y) (Jogador (x1,y1) d b) t
  |otherwise = " " ++ descreveLinha (x+1,y) (Jogador (x1,y1) d b) t
+descreveLinha (x,y) (Jogador (x1,y1) d b) (Porta:t)
+ |x==x1 && y==y1 = (case d of Oeste -> "<"
+                              Este  -> ">") ++ descreveLinha (x+1,y) (Jogador (x1,y1) d b) t
+ |otherwise = "P" ++ descreveLinha (x+1,y) (Jogador (x1,y1) d b) t
 descreveLinha (x,y) (Jogador c d b) (a:t) = (case a of Bloco -> "X"
                                                        Porta -> "P"
                                                        Caixa -> "C") ++ descreveLinha (x+1,y) (Jogador c d b) t
@@ -87,7 +97,14 @@ descreveLinha (x,y) (Jogador (x1,y1) d b) (Vazio:t)
  |x==x1 && y==y1 = (case d of Oeste -> "<"
                               Este  -> ">") ++ descreveLinha (x+1,y) (Jogador (x1,y1) d b) t
  |otherwise = " " ++ descreveLinha (x+1,y) (Jogador (x1,y1) d b) t
+descreveLinha (x,y) (Jogador (x1,y1) d b) (Porta:t)
+ |x==x1 && y==y1 = (case d of Oeste -> "<"
+                              Este  -> ">") ++ descreveLinha (x+1,y) (Jogador (x1,y1) d b) t
+ |otherwise = "P" ++ descreveLinha (x+1,y) (Jogador (x1,y1) d b) t
 descreveLinha (x,y) (Jogador c d b) (a:t) = (case a of Bloco -> "X"
                                                        Porta -> "P"
                                                        Caixa -> "C") ++ descreveLinha (x+1,y) (Jogador c d b) t
+
+
+
 

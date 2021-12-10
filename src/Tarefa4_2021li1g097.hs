@@ -10,356 +10,230 @@ Módulo para a realização da Tarefa 4 do projeto de LI1 em 2021/22.
 module Tarefa4_2021li1g097 where
 
 import LI12122
-import Tarefa3_2021li1g097
+import Tarefa3_2021li1g097 () 
+import Tarefa2_2021li1g097 ( constroiMapa, desconstroiMapa )
+import Tarefa1_2021li1g097 ( removeCertaPeca )
 
 moveJogador :: Jogo -> Movimento -> Jogo
 moveJogador (Jogo (p:ps) (Jogador (x,y) d b)) m
-{-----------------------------------/1/-----------------------------------}
  |m == AndarEsquerda = if not b
-                       then if verificaLados (0,0) (Jogo (p:ps) (Jogador (x-1,y) d b))
-                            then jogadorCair (0,0) (p:ps) (Jogo (p:ps) (Jogador (x-1,y) Oeste b))
+                       then if verificaLados (0,0) (Jogo (p:ps) (Jogador (x,y) d b)) AndarEsquerda
+                            then if vazioEmbaixo (0,0) (Jogo (p:ps) (Jogador (x-1,y) Oeste b))
+                                 then jogadorCai (Jogo (p:ps) (Jogador (x-1,y) Oeste b))
+                                 else Jogo (p:ps) (Jogador (x-1,y) Oeste b)
                             else Jogo (p:ps) (Jogador (x,y) Oeste b)
-                         {-----------------------------/5/-----------------------------}
-                       else if verificaLados (0,0) (Jogo (p:ps) (Jogador (x-1,y) d b)) && naoBlocoCimaJogador (0,0) (Jogo (p:ps) (Jogador (x-1,y) d b))
-                            then Jogo (mapaAndarCaixa (0,0) (Jogo (p:ps) (Jogador (x,y) d b))) (Jogador (x-1,y) Oeste b)
+                       else if verificaLadosCaixa (0,0) (Jogo (p:ps) (Jogador (x,y) d b)) AndarEsquerda
+                            then if vazioEmbaixo (0,0) (Jogo (p:ps) (Jogador (x-1,y) Oeste b))
+                                 then colocaCaixaCima (0,0) (removeCertaPeca (Caixa,(x,y-1)) (desconstroiMapa (p:ps))) (jogadorCai (Jogo (p:ps) (Jogador (x-1,y) Oeste b)))
+                                 else colocaCaixaCima (0,0) (removeCertaPeca (Caixa,(x,y-1)) (desconstroiMapa (p:ps))) (Jogo (p:ps) (Jogador (x-1,y) Oeste b))
                             else Jogo (p:ps) (Jogador (x,y) Oeste b)
 
-{-----------------------------------/1/-----------------------------------}
  |m == AndarDireita = if not b
-                      then if verificaLados (0,0) (Jogo (p:ps) (Jogador (x+1,y) d b))
-                           then jogadorCair (0,0) (p:ps) (Jogo (p:ps) (Jogador (x+1,y) Este b))
+                      then if verificaLados (0,0) (Jogo (p:ps) (Jogador (x,y) d b)) AndarDireita
+                           then if vazioEmbaixo (0,0) (Jogo (p:ps) (Jogador (x+1,y) Este b))
+                                then jogadorCai (Jogo (p:ps) (Jogador (x+1,y) Este b))
+                                else Jogo (p:ps) (Jogador (x+1,y) Este b)
                            else Jogo (p:ps) (Jogador (x,y) Este b)
-                         {-----------------------------/5/-----------------------------}
-                      else if verificaLados (0,0) (Jogo (p:ps) (Jogador (x+1,y) d b)) && naoBlocoCimaJogador (0,0) (Jogo (p:ps) (Jogador (x+1,y) d b))
-                           then Jogo (mapaAndarCaixa (0,0) (Jogo (p:ps) (Jogador (x,y) d b))) (Jogador (x+1,y) Este b)
+                      else if verificaLadosCaixa (0,0) (Jogo (p:ps) (Jogador (x,y) d b)) AndarDireita
+                           then if vazioEmbaixo (0,0) (Jogo (p:ps) (Jogador (x+1,y) Este b))
+                                then colocaCaixaCima (0,0) (removeCertaPeca (Caixa,(x,y-1)) (desconstroiMapa (p:ps))) (jogadorCai (Jogo (p:ps) (Jogador (x+1,y) Este b)))
+                                else colocaCaixaCima (0,0) (removeCertaPeca (Caixa,(x,y-1)) (desconstroiMapa (p:ps))) (Jogo (p:ps) (Jogador (x+1,y) Este b))
                            else Jogo (p:ps) (Jogador (x,y) Este b)
-{-----------------------------------/2/-----------------------------------}
+
  |m == Trepar = if not b
-                then if verificaTrepar (0,0) (Jogo (p:ps) (Jogador (x,y) d b)) && naoBlocoCimaJogador (0,0) (Jogo (p:ps) (Jogador (x,y) d b))
-                     then case d of Oeste -> Jogo (p:ps) (Jogador (x-1,y-1) d b)
-                                    Este -> Jogo (p:ps) (Jogador (x+1,y-1) d b)
+                then if podeTrepar (0,0) (Jogo (p:ps) (Jogador (x,y) d b))
+                     then if d == Oeste
+                          then Jogo (p:ps) (Jogador (x-1,y-1) Oeste b)
+                          else Jogo (p:ps) (Jogador (x+1,y-1) Este b)
                      else Jogo (p:ps) (Jogador (x,y) d b)
-                  {-----------------------------/6/-----------------------------}
-                else if verificaTrepar (0,0) (Jogo (p:ps) (Jogador (x,y) d b)) && naoBlocoCimaJogador (0,0) (Jogo (p:ps) (Jogador (x,y-1) d b))
-                     then case d of Oeste -> Jogo (mapaTreparCaixa (0,0) (Jogo (p:ps) (Jogador (x,y) d b))) (Jogador (x-1,y+1) d b)
-                                    Este -> Jogo (mapaTreparCaixa (0,0) (Jogo (p:ps) (Jogador (x,y) d b))) (Jogador (x+1,y+1) d b)
+                else if podeTreparCaixa (0,0) (Jogo (p:ps) (Jogador (x,y) d b))
+                     then if d == Oeste
+                          then colocaCaixaCima (0,0) (removeCertaPeca (Caixa,(x,y-1)) (desconstroiMapa (p:ps))) (Jogo (p:ps) (Jogador (x-1,y-1) Oeste b))
+                          else colocaCaixaCima (0,0) (removeCertaPeca (Caixa,(x,y-1)) (desconstroiMapa (p:ps))) (Jogo (p:ps) (Jogador (x+1,y-1) Este b))
                      else Jogo (p:ps) (Jogador (x,y) d b)
-{-----------------------------------/3/-----------------------------------}
+
  |m == InterageCaixa = if not b
-                                     {----------------------/3.1/----------------------}           {----------------------/3.2/----------------------}          {----------------------/3.3/----------------------}
-                       then if verificaInterageCaixa (0,0) (Jogo (p:ps) (Jogador (x,y) d b)) && naoBlocoCimaCaixa (0,0) (Jogo (p:ps) (Jogador (x,y) d b)) && naoBlocoCimaJogador (0,0) (Jogo (p:ps) (Jogador (x,y) d b))
-                            then Jogo (mapaPegarCaixa (0,0) (Jogo (p:ps) (Jogador (x,y) d b))) (Jogador (x,y) d True)
-                            else Jogo (p:ps) (Jogador (x,y) d b)
-                         {--------------------------------/4/--------------------------------}
-                       else if verificaInterageVazio (0,0) (Jogo (p:ps) (Jogador (x,y) d b)) 
-                                                {----------------------/4.1/----------------------}
-                            then Jogo (mapaPousarCaixa (0,0) (Jogo (p:ps) (Jogador (x,y) d b))) (Jogador (x,y) d False)
-                                                {----------------------/4.2/----------------------}
-                            else if verificaInterageVazioCima (0,0) (Jogo (p:ps) (Jogador (x,y) d b))
-                                 then Jogo (mapaPousarCaixaCima (0,0) (Jogo (p:ps) (Jogador (x,y) d b))) (Jogador (x,y) d False)
-                                 else Jogo (p:ps) (Jogador (x,y) d b)
+                       then if podePegar (0,0) (Jogo (p:ps) (Jogador (x,y) d b))     
+                            then if d == Oeste     
+                                 then colocaCaixaCima (0,0) (removeCertaPeca (Caixa,(x-1,y)) (desconstroiMapa (p:ps))) (Jogo (p:ps) (Jogador (x,y) Oeste b))
+                                 else colocaCaixaCima (0,0) (removeCertaPeca (Caixa,(x+1,y)) (desconstroiMapa (p:ps))) (Jogo (p:ps) (Jogador (x,y) Este b))              
+                            else Jogo (p:ps) (Jogador (x,y) d b)   
+                       else if podeLargar (0,0) (Jogo (p:ps) (Jogador (x,y) d b)) 
+                            then if vaiAtirar (0,0) (Jogo (p:ps) (Jogador (x,y) d b))
+                                 then if d == Oeste
+                                      then Jogo (constroiMapa (removeCertaPeca (Caixa,(x,y-1)) (desconstroiMapa (p:ps)) ++ [(Caixa,(x-1,pecaCoordenada y (certaColuna (x-1) (0,0) (p:ps))))]))  (Jogador (x,y) Oeste b) 
+                                      else Jogo (constroiMapa (removeCertaPeca (Caixa,(x,y-1)) (desconstroiMapa (p:ps)) ++ [(Caixa,(x+1,pecaCoordenada y (certaColuna (x+1) (0,0) (p:ps))))]))  (Jogador (x,y) Este b)
+                                 else if vazioFrente (0,0) (Jogo (p:ps) (Jogador (x,y) d b))     
+                                      then if d == Oeste 
+                                           then Jogo (constroiMapa (removeCertaPeca (Caixa,(x,y-1)) (desconstroiMapa (p:ps)) ++ [(Caixa,(x-1,y))]))  (Jogador (x,y) Oeste b)
+                                           else Jogo (constroiMapa (removeCertaPeca (Caixa,(x,y-1)) (desconstroiMapa (p:ps)) ++ [(Caixa,(x+1,y))]))  (Jogador (x,y) Este b) 
+                                      else if d == Oeste 
+                                           then Jogo (constroiMapa (removeCertaPeca (Caixa,(x,y-1)) (desconstroiMapa (p:ps)) ++ [(Caixa,(x-1,y-1))])) (Jogador (x,y) Oeste b)      
+                                           else Jogo (constroiMapa (removeCertaPeca (Caixa,(x,y-1)) (desconstroiMapa (p:ps)) ++ [(Caixa,(x+1,y-1))])) (Jogador (x,y) Este b) 
+                            else Jogo (p:ps) (Jogador (x,y) d b) 
 
+vazioEmbaixo :: (Int,Int)    -- ^Acumulador que nos permite manter a informação da coordenada em que vamos
+                -> Jogo      -- ^Jogo
+                -> Bool      -- ^Resultado
+vazioEmbaixo (x1,y1) (Jogo ([]:t) (Jogador (x2,y2) d b)) = vazioEmbaixo (0,y1+1) (Jogo t (Jogador (x2,y2) d b))
+vazioEmbaixo (x1,y1) (Jogo ((x:xs):t) (Jogador (x2,y2) d b))
+ |x1 == x2 && y1 == y2+1 = x == Vazio
+ |otherwise = vazioEmbaixo (x1+1,y1) (Jogo (xs:t) (Jogador (x2,y2) d b))
 
-{----------------------/Jogador a cair/----------------------}
+vazioEmcima :: (Int,Int)    -- ^Acumulador que nos permite manter a informação da coordenada em que vamos
+                -> Jogo      -- ^Jogo
+                -> Bool      -- ^Resultado
+vazioEmcima (x1,y1) (Jogo ([]:t) (Jogador (x2,y2) d b)) = vazioEmcima (0,y1+1) (Jogo t (Jogador (x2,y2) d b))
+vazioEmcima (x1,y1) (Jogo ((x:xs):t) (Jogador (x2,y2) d b))
+ |x1 == x2 && y1 == y2-1 = x == Vazio
+ |otherwise = vazioEmcima (x1+1,y1) (Jogo (xs:t) (Jogador (x2,y2) d b))
 
-jogadorCair :: (Int,Int) -> Mapa -> Jogo -> Jogo
-jogadorCair  _ m (Jogo [] (Jogador (x,y) d b)) = Jogo m (Jogador (x,y) d b)
-jogadorCair (a1,a2) m (Jogo ([]:ps) (Jogador (x,y) d b)) = jogadorCair (0,a2+1) m (Jogo ps (Jogador (x,y) d b))
-jogadorCair (a1,a2) m (Jogo ((h:t):ps) (Jogador (x,y) d b))
- |a2==y+1 && a1==x = case h of Bloco -> Jogo m (Jogador (x,y) d b)
-                               Caixa -> Jogo m (Jogador (x,y) d b)
-                               Vazio -> jogadorCair (0,0) m (Jogo m (Jogador (x,y+1) d b))
-                               Porta -> Jogo m (Jogador (x,y+1) d b)
- |otherwise = jogadorCair (a1+1,a2) m (Jogo (t:ps) (Jogador (x,y) d b))
+verificaLados :: (Int,Int)       -- ^Acumulador que nos permite verificar a peça a frente do jogador
+                 -> Jogo         -- ^Jogo
+                 -> Movimento    -- ^Movimento que é dado         
+                 -> Bool         -- ^Resultado
+verificaLados (x1,y1) (Jogo [] (Jogador (x2,y2) d b)) m = False
+verificaLados (x1,y1) (Jogo ([]:t) (Jogador (x2,y2) d b)) m = verificaLados (0,y1+1) (Jogo t (Jogador (x2,y2) d b)) m
+verificaLados (x1,y1) (Jogo ((x:xs):t) (Jogador (x2,y2) d b)) AndarEsquerda
+  |y1 == y2 && x1 == x2-1 = x == Vazio || x == Porta
+  |otherwise = verificaLados (x1+1,y1) (Jogo (xs:t) (Jogador (x2,y2) d b)) AndarEsquerda
+verificaLados (x1,y1) (Jogo ((x:xs):t) (Jogador (x2,y2) d b)) AndarDireita
+  |y1 == y2 && x1 == x2+1 = x == Vazio || x == Porta
+  |otherwise = verificaLados (x1+1,y1) (Jogo (xs:t) (Jogador (x2,y2) d b)) AndarDireita
 
+verificaLadosCaixa :: (Int,Int)          -- ^Acumulador de coordenadas que nos permite verificar a peça a frente do jogador
+                      -> Jogo            -- ^Jogo
+                      -> Movimento       -- ^Movimento que é recebido 
+                      -> Bool            -- ^Resultado
+verificaLadosCaixa (_,y1) (Jogo [] (Jogador (x2,y2) d b)) m = False
+verificaLadosCaixa (_,y1) (Jogo ([]:t) (Jogador (x2,y2) d b)) m = verificaLadosCaixa (0,y1+1) (Jogo t (Jogador (x2,y2) d b)) m
+verificaLadosCaixa (x1,y1) (Jogo ((x:xs):t) (Jogador (x2,y2) d b)) AndarEsquerda
+ |y1 == y2-1 && x1 == x2-1 = x == Vazio && verificaLadosCaixa (x1+1,y1) (Jogo (xs:t) (Jogador (x2,y2) d b)) AndarEsquerda
+ |y1 == y2 && x1 == x2-1 = x == Vazio || x == Porta
+ |otherwise = verificaLadosCaixa (x1+1,y1) (Jogo (xs:t) (Jogador (x2,y2) d b)) AndarEsquerda
+verificaLadosCaixa (x1,y1) (Jogo ((x:xs):t) (Jogador (x2,y2) d b)) AndarDireita
+ |y1 == y2-1  && x1 == x2+1 = x == Vazio && verificaLadosCaixa (x1+1,y1) (Jogo (xs:t) (Jogador (x2,y2) d b)) AndarDireita
+ |y1 == y2 && x1 == x2+1 = x == Vazio || x == Porta
+ |otherwise = verificaLadosCaixa (x1+1,y1) (Jogo (xs:t) (Jogador (x2,y2) d b)) AndarDireita
 
-jogadorCairCaixa :: (Int,Int) -> (Int,Int) -> Mapa -> Jogo -> Jogo
-jogadorCairCaixa  _ _ m (Jogo [] (Jogador (x,y) d b)) = Jogo m (Jogador (x,y) d b)
-jogadorCairCaixa (a1,a2) (c1,c2) m (Jogo ([]:ps) (Jogador (x,y) d b)) = jogadorCairCaixa (0,a2+1) (c1,c2) m (Jogo ps (Jogador (x,y) d b))
-jogadorCairCaixa (a1,a2) (c1,c2) m (Jogo ((h:t):ps) (Jogador (x,y) d b))
- |a2==y+1 && a1==x = case h of Bloco -> Jogo m (Jogador (x,y) d b)
-                               Caixa -> Jogo m (Jogador (x,y) d b)
-                               Vazio -> jogadorCairCaixa (0,0) (c1,c2) m (Jogo m (Jogador (x,y+1) d b))
-                               Porta -> Jogo m (Jogador (x,y+1) d b)
- |otherwise = jogadorCairCaixa (a1+1,a2) (c1,c2) m (Jogo (t:ps) (Jogador (x,y) d b))
+podeTrepar :: (Int,Int)       -- ^Acumulador de coordenadas que nos permite verificar as peças nas coordenadas na diagonal e a frente do jogador
+              -> Jogo         -- ^Jogo
+              -> Bool         -- ^Resultado
+podeTrepar _ (Jogo [] Jogador {}) = False
+podeTrepar (x1,y1) (Jogo ([]:t) (Jogador (x2,y2) d b))  = podeTrepar (0,y1+1) (Jogo t (Jogador (x2,y2) d b))
+podeTrepar (x1,y1) (Jogo ((x:xs):t) (Jogador (x2,y2) Oeste b))
+ |x1 == x2-1 && y1 == y2-1 = x == Vazio && a
+ |x1 == x2 && y1 == y2-1 = x == Vazio && a
+ |x1 == x2-1 && y1 == y2 = x == Bloco || x == Caixa
+ |otherwise = a
+ where a = podeTrepar (x1+1,y1) (Jogo (xs:t) (Jogador (x2,y2) Oeste b))
+podeTrepar (x1,y1) (Jogo ((x:xs):t) (Jogador (x2,y2) Este b))
+ |x1 == x2 && y1 == y2-1 = x == Vazio && b
+ |x1 == x2+1 && y1 == y2-1 = x == Vazio && b
+ |x1 == x2+1 && y1 == y2 = x == Caixa || x == Bloco
+ |otherwise = b
+ where b = podeTrepar (x1+1,y1) (Jogo (xs:t) (Jogador (x2,y2) Este b))
 
-{-----------------------------------/1/-----------------------------------}
-verificaLados :: (Int,Int) -> Jogo -> Bool
-verificaLados (_,_) (Jogo [] (Jogador (_,_) _ _ )) = False
-verificaLados (a1,a2) (Jogo (p:ps) (Jogador (x,y) d b)) = verificaLinha1 (0,a2) p (Jogador (x,y) d b) || verificaLados (0,a2+1) (Jogo ps (Jogador (x,y) d b))
-                                                              where verificaLinha1 :: (Int,Int) -> [Peca] -> Jogador -> Bool
-                                                                    verificaLinha1 (a1,a2) (h:t) (Jogador (x,y) d b)
-                                                                     |a2/=y = False
-                                                                     |otherwise = if a1==x then case h of Bloco -> False
-                                                                                                          Porta -> True
-                                                                                                          Caixa -> False
-                                                                                                          Vazio -> True
-                                                                                           else verificaLinha1 (a1+1,a2) t (Jogador (x,y) d b)
+podeTreparCaixa :: (Int,Int)          -- ^Acumulador de coordenadas que nos permite verificar as peças
+                   -> Jogo            -- ^Jogo
+                   -> Bool            -- ^Resultado
+podeTreparCaixa _ (Jogo [] Jogador {}) = False
+podeTreparCaixa (_,y1) (Jogo ([]:t) (Jogador (x2,y2) d b)) = podeTreparCaixa (0,y1+1) (Jogo t (Jogador (x2,y2) d b))
+podeTreparCaixa (x1,y1) (Jogo ((x:xs):t) (Jogador (x2,y2) Oeste b))
+ |x1 == x2-1 && y1 == y2-2 = x == Vazio && a
+ |x1 == x2 && y1 == y2-2 = x == Vazio && a
+ |x1 == x2-1 && y1 == y2-1 = x == Vazio && a
+ |x1 == x2-1 && y1 == y2 = x == Bloco || x == Caixa
+ |otherwise = a
+ where a = podeTreparCaixa (x1+1,y1) (Jogo (xs:t) (Jogador (x2,y2) Oeste b))
+podeTreparCaixa (x1,y1) (Jogo ((x:xs):t) (Jogador (x2,y2) Este b))
+ |x1 == x2 && y1 == y2-2 = x == Vazio && b
+ |x1 == x2+1 && y1 == y2-2 = x == Vazio && b
+ |x1 == x2+1 && y1 == y2-1 = x == Vazio && b
+ |x1 == x2+1 && y1 == y2 = x == Bloco || x == Caixa
+ |otherwise = b
+ where b = podeTreparCaixa (x1+1,y1) (Jogo (xs:t) (Jogador (x2,y2) Este b))
 
-{-----------------------------------/2/-----------------------------------}
-verificaTrepar :: (Int,Int) -> Jogo -> Bool
-verificaTrepar (a1,a2) (Jogo (p:ps) (Jogador (x,y) d b)) = case d of Oeste -> eBlocoOuCaixa (0,0) (Jogo (p:ps) (Jogador (x-1,y) d b)) && vazioOuPortaEmCima (0,0) (Jogo (p:ps) (Jogador (x-1,y+1) d b))
-                                                                     Este -> eBlocoOuCaixa (0,0) (Jogo (p:ps) (Jogador (x+1,y) d b)) && vazioOuPortaEmCima (0,0) (Jogo (p:ps) (Jogador (x+1,y+1) d b))
+jogadorCai :: Jogo -> Jogo
+jogadorCai (Jogo m (Jogador (x,y) d b))
+ |vazioEmbaixo (0,0) (Jogo m (Jogador (x,y) d b)) = jogadorCai (Jogo m (Jogador (x,y+1) d b))
+ |otherwise = Jogo m (Jogador (x,y) d b)
 
-eBlocoOuCaixa :: (Int,Int) -> Jogo -> Bool
-eBlocoOuCaixa (_,_) (Jogo [] (Jogador (_,_) _ _ )) = False
-eBlocoOuCaixa (a1,a2) (Jogo (p:ps) (Jogador (x,y) d b)) = verificaLinha1 (0,a2) p (Jogador (x,y) d b) || eBlocoOuCaixa (0,a2+1) (Jogo ps (Jogador (x,y) d b))
-                                                              where verificaLinha1 :: (Int,Int) -> [Peca] -> Jogador -> Bool
-                                                                    verificaLinha1 (a1,a2) (h:t) (Jogador (x,y) d b)
-                                                                     |a2/=y = False
-                                                                     |otherwise = if a1==x then case h of Bloco -> True
-                                                                                                          Porta -> False
-                                                                                                          Caixa -> True
-                                                                                                          Vazio -> False
-                                                                                           else verificaLinha1 (a1+1,a2) t (Jogador (x,y) d b)
+colocaCaixaCima :: (Int,Int) -> [(Peca,Coordenadas)] -> Jogo -> Jogo
+colocaCaixaCima (x1,y1) l (Jogo ([]:t) (Jogador (x2,y2) d b)) = colocaCaixaCima (0,y1+1) l (Jogo t (Jogador (x2,y2) d b))
+colocaCaixaCima (x1,y1) l (Jogo ((x:xs):t) (Jogador (x2,y2) d b))
+ |x1 == x2 && y1 == y2-1 = Jogo (constroiMapa (l ++ [(Caixa,(x1,y1))])) (Jogador (x2,y2) d True)
+ |otherwise = colocaCaixaCima (x1+1,y1) l (Jogo (xs:t) (Jogador (x2,y2) d b))
 
-vazioOuPortaEmCima :: (Int,Int) -> Jogo -> Bool
-vazioOuPortaEmCima (_,_) (Jogo [] (Jogador (_,_) _ _ )) = True
-vazioOuPortaEmCima (a1,a2) (Jogo (p:ps) (Jogador (x,y) d b)) = verificaLinha3 (0,a2) p (Jogador (x,y) d b) || vazioOuPortaEmCima (0,a2+1) (Jogo ps (Jogador (x,y) d b))
-                                              where verificaLinha3 :: (Int,Int)-> [Peca] -> Jogador -> Bool
-                                                    verificaLinha3 (a1,a2) (h:t) (Jogador (x,y) d b)
-                                                     |a2/=y = False
-                                                     |otherwise = if a1==x then case h of Bloco -> False
-                                                                                          Porta -> True
-                                                                                          Caixa -> False
-                                                                                          Vazio -> True
-                                                                           else verificaLinha3 (a1+1,a2) t (Jogador (x,y) d b)
+podePegar :: (Int,Int) -> Jogo -> Bool
+podePegar _ (Jogo [] Jogador {}) = False
+podePegar (_,y1) (Jogo ([]:t) (Jogador (x2,y2) d b)) = podePegar (0,y1+1) (Jogo t (Jogador (x2,y2) d b))
+podePegar (x1,y1) (Jogo ((x:xs):t) (Jogador (x2,y2) Oeste b))
+ |x1 == x2-1 && y1 == y2-1 = x == Vazio && a
+ |x1 == x2 && y1 == y2-1 = x == Vazio && a
+ |x1 == x2-1 && y1 == y2 = x == Caixa
+ |otherwise = a
+ where a = podePegar (x1+1,y1) (Jogo (xs:t) (Jogador (x2,y2) Oeste b))
+podePegar (x1,y1) (Jogo ((x:xs):t) (Jogador (x2,y2) Este b))
+ |x1 == x2 && y1 == y2-1 = x == Vazio && b
+ |x1 == x2+1 && y1 == y2-1 = x == Vazio && b
+ |x1 == x2+1 && y1 == y2 = x == Caixa
+ |otherwise = b
+ where b = podePegar (x1+1,y1) (Jogo (xs:t) (Jogador (x2,y2) Este b))
 
-{-----------------------------------/3/-----------------------------------}
-{----------------------/3.1/----------------------}
-verificaInterageCaixa :: (Int,Int) -> Jogo -> Bool
-verificaInterageCaixa (a1,a2) (Jogo (p:ps) (Jogador (x,y) d b)) = case d of Oeste -> eCaixa (0,0) (Jogo (p:ps) (Jogador (x-1,y) d b))
-                                                                            Este -> eCaixa (0,0) (Jogo (p:ps) (Jogador (x+1,y) d b))
+podeLargar :: (Int,Int) -> Jogo -> Bool
+podeLargar _ (Jogo [] Jogador {}) = False
+podeLargar (_,y1) (Jogo ([]:t) (Jogador (x2,y2) d b)) = podeLargar (0,y1+1) (Jogo t (Jogador (x2,y2) d b))
+podeLargar (x1,y1) (Jogo ((x:xs):t) (Jogador (x2,y2) Oeste b))
+ |x1 == x2-1 && y1 == y2-1 = x == Vazio && a
+ |x1 == x2-1 && y1 == y2 = x == Caixa || x == Vazio || x == Bloco
+ |otherwise = a
+ where a = podeLargar (x1+1,y1) (Jogo (xs:t) (Jogador (x2,y2) Oeste b))
+podeLargar (x1,y1) (Jogo ((x:xs):t) (Jogador (x2,y2) Este b))
+ |x1 == x2+1 && y1 == y2-1 = x == Vazio && b
+ |x1 == x2+1 && y1 == y2 = x == Caixa || x == Vazio || x == Bloco
+ |otherwise = b
+ where b = podeLargar (x1+1,y1) (Jogo (xs:t) (Jogador (x2,y2) Este b))
 
-eCaixa :: (Int,Int) -> Jogo -> Bool
-eCaixa (_,_) (Jogo [] (Jogador (_,_) _ _ )) = False
-eCaixa (a1,a2) (Jogo (p:ps) (Jogador (x,y) d b)) = verificaLinha4 (0,a2) p (Jogador (x,y) d b) || eCaixa (0,a2+1) (Jogo ps (Jogador (x,y) d b))
-                                                              where verificaLinha4 :: (Int,Int) -> [Peca] -> Jogador -> Bool
-                                                                    verificaLinha4 (a1,a2) (h:t) (Jogador (x,y) d b)
-                                                                     |a2/=y = False
-                                                                     |otherwise = if a1==x then case h of Bloco -> False
-                                                                                                          Porta -> False
-                                                                                                          Caixa -> True
-                                                                                                          Vazio -> False
-                                                                                           else verificaLinha4 (a1+1,a2) t (Jogador (x,y) d b)
+vazioFrente :: (Int,Int) -> Jogo -> Bool
+vazioFrente _ (Jogo [] Jogador {}) = False
+vazioFrente (_,y1) (Jogo ([]:t) (Jogador (x2,y2) d b)) = vazioFrente (0,y1+1) (Jogo t (Jogador (x2,y2) d b))
+vazioFrente (x1,y1) (Jogo ((x:xs):t) (Jogador (x2,y2) Oeste b))
+ |x1 == x2-1 && y1 == y2 = x == Vazio
+ |otherwise = vazioFrente (x1+1,y1) (Jogo (xs:t) (Jogador (x2,y2) Oeste b))
+vazioFrente (x1,y1) (Jogo ((x:xs):t) (Jogador (x2,y2) Este b))
+ |x1 == x2+1 && y1 == y2 = x == Vazio
+ |otherwise = vazioFrente (x1+1,y1) (Jogo (xs:t) (Jogador (x2,y2) Oeste b))
 
-mapaPegarCaixa :: (Int,Int) -> Jogo -> Mapa
-mapaPegarCaixa (0,0) (Jogo (p:ps) (Jogador (x,y) d b))
- |d==Oeste = mapaPegarCaixaOeste (0,0) (0,0) (Jogo (p:ps) (Jogador (x,y) d b))
- |d==Este = mapaPegarCaixaEste (0,0) (0,0) (Jogo (p:ps) (Jogador (x,y) d b))
+vaiAtirar :: (Int,Int) -> Jogo -> Bool
+vaiAtirar _ (Jogo [] Jogador {}) = False
+vaiAtirar (_,y1) (Jogo ([]:t) (Jogador (x2,y2) d b)) = vaiAtirar (0,y1+1) (Jogo t (Jogador (x2,y2) d b))
+vaiAtirar (x1,y1) (Jogo ((x:xs):t) (Jogador (x2,y2) Oeste b))
+ |x1 == x2-1 && y1 == y2+1 = x == Vazio
+ |otherwise = vaiAtirar (x1+1,y1) (Jogo (xs:t) (Jogador (x2,y2) Oeste b))
+vaiAtirar (x1,y1) (Jogo ((x:xs):t) (Jogador (x2,y2) Este b))
+ |x1 == x2+1 && y1 == y2+1 = x == Vazio
+ |otherwise = vaiAtirar (x1+1,y1) (Jogo (xs:t) (Jogador (x2,y2) Este b))
 
-mapaPegarCaixaOeste :: (Int,Int) -> (Int,Int) -> Jogo -> Mapa
-mapaPegarCaixaOeste (_,_) (_,_) (Jogo [] (Jogador (x,y) d b)) = []
-mapaPegarCaixaOeste (c1,c2) (v1,v2) (Jogo (p:ps) (Jogador (x,y) d b)) = constroiLinhaOeste (0,c2) (0,v2) p (Jogador (x,y) d b) : mapaPegarCaixaOeste (0,c2+1) (0,v2+1) (Jogo ps (Jogador (x,y) d b))
-                                                                        where constroiLinhaOeste :: (Int,Int) -> (Int,Int) -> [Peca] -> Jogador -> [Peca]
-                                                                              constroiLinhaOeste (_,_) (_,_) [] _ = []
-                                                                              constroiLinhaOeste (c1,c2) (v1,v2) (h:t) (Jogador (x,y) d b)
-                                                                               |c2/=y-1 && v2/=y = h : constroiLinhaOeste (c1+1,c2) (v1+1,v2) t (Jogador (x,y) d b)
-                                                                               |c2==y-1 = if c1==x then Caixa : constroiLinhaOeste (c1+1,c2) (v1+1,v2) t (Jogador (x,y) d b)
-                                                                                                   else h : constroiLinhaOeste (c1+1,c2) (v1+1,v2) t (Jogador (x,y) d b)
-                                                                               |v2==y = if v1==x-1 then Vazio : constroiLinhaOeste (c1+1,c2) (v1+1,v2) t (Jogador (x,y) d b)
-                                                                                                   else h : constroiLinhaOeste (c1+1,c2) (v1+1,v2) t (Jogador (x,y) d b)
+certaColuna :: Int -> (Int,Int) -> Mapa -> [(Peca,Coordenadas)]
+certaColuna _ _ [] = []
+certaColuna x1 (x2,y2) ([]:t) = certaColuna x1 (0,y2+1) t
+certaColuna x1 (x2,y2) ((x:xs):t)
+ |x1 == x2 = (x,(x2,y2)):certaColuna x1 (x2+1,y2) (xs:t)
+ |otherwise = certaColuna x1 (x2+1,y2) (xs:t)
 
-mapaPegarCaixaEste :: (Int,Int) -> (Int,Int) -> Jogo -> Mapa
-mapaPegarCaixaEste (_,_) (_,_) (Jogo [] (Jogador (x,y) d b)) = []
-mapaPegarCaixaEste (c1,c2) (v1,v2) (Jogo (p:ps) (Jogador (x,y) d b)) = constroiLinhaEste (0,c2) (0,v2) p (Jogador (x,y) d b) : mapaPegarCaixaOeste (0,c2+1) (0,v2+1) (Jogo ps (Jogador (x,y) d b))
-                                                                        where constroiLinhaEste :: (Int,Int) -> (Int,Int) -> [Peca] -> Jogador -> [Peca]
-                                                                              constroiLinhaEste (_,_) (_,_) [] _ = []
-                                                                              constroiLinhaEste (c1,c2) (v1,v2) (h:t) (Jogador (x,y) d b)
-                                                                               |c2/=y-1 && v2/=y = h : constroiLinhaEste (c1+1,c2) (v1+1,v2) t (Jogador (x,y) d b)
-                                                                               |c2==y-1 = if c1==x then Caixa : constroiLinhaEste (c1+1,c2) (v1+1,v2) t (Jogador (x,y) d b)
-                                                                                                   else h : constroiLinhaEste (c1+1,c2) (v1+1,v2) t (Jogador (x,y) d b)
-                                                                               |v2==y = if v1==x+1 then Vazio : constroiLinhaEste (c1+1,c2) (v1+1,v2) t (Jogador (x,y) d b)
-                                                                                                   else h : constroiLinhaEste (c1+1,c2) (v1+1,v2) t (Jogador (x,y) d b)
-
-{----------------------/3.2/----------------------}
-
-naoBlocoCimaCaixa :: (Int,Int) -> Jogo -> Bool
-naoBlocoCimaCaixa (a1,a2) (Jogo (p:ps) (Jogador (x,y) d b)) = case d of Oeste -> naoBlocoCimaCaixaOeste (0,0) (Jogo (p:ps) (Jogador (x-1,y) d b))
-                                                                        Este -> naoBlocoCimaCaixaEste (0,0) (Jogo (p:ps) (Jogador (x+1,y) d b))
-
-naoBlocoCimaCaixaOeste :: (Int,Int) -> Jogo -> Bool
-naoBlocoCimaCaixaOeste (a1,a2) (Jogo (p:ps) (Jogador (x,y) d b)) = verificaLinha4 (0,a2) p (Jogador (x,y) d b) || naoBlocoCimaCaixaOeste (0,a2+1) (Jogo ps (Jogador (x,y) d b))
-                                                                     where verificaLinha4 :: (Int,Int) -> [Peca] -> Jogador -> Bool
-                                                                           verificaLinha4 (a1,a2) (h:t) (Jogador (x,y) d b)
-                                                                            |a2/=y-1 = False
-                                                                            |otherwise = if a1==x then case h of Bloco -> False
-                                                                                                                 Porta -> False
-                                                                                                                 Caixa -> False
-                                                                                                                 Vazio -> True
-                                                                                                  else verificaLinha4 (a1+1,a2) t (Jogador (x,y) d b)
-
-naoBlocoCimaCaixaEste :: (Int,Int) -> Jogo -> Bool
-naoBlocoCimaCaixaEste (a1,a2) (Jogo (p:ps) (Jogador (x,y) d b)) = verificaLinha4 (0,a2) p (Jogador (x,y) d b) || naoBlocoCimaCaixaEste (0,a2+1) (Jogo ps (Jogador (x,y) d b))
-                                                                     where verificaLinha4 :: (Int,Int) -> [Peca] -> Jogador -> Bool
-                                                                           verificaLinha4 (a1,a2) (h:t) (Jogador (x,y) d b)
-                                                                            |a2/=y-1 = False
-                                                                            |otherwise = if a1==x then case h of Bloco -> False
-                                                                                                                 Porta -> False
-                                                                                                                 Caixa -> False
-                                                                                                                 Vazio -> True
-                                                                                                  else verificaLinha4 (a1+1,a2) t (Jogador (x,y) d b)
-
-{----------------------/3.3/----------------------}
-
-naoBlocoCimaJogador :: (Int,Int) -> Jogo -> Bool
-naoBlocoCimaJogador (a1,a2) (Jogo (p:ps) (Jogador (x,y) d b)) = verificaLinha4 (0,a2) p (Jogador (x,y) d b) || naoBlocoCimaJogador (0,a2+1) (Jogo ps (Jogador (x,y) d b))
-                                                                     where verificaLinha4 :: (Int,Int) -> [Peca] -> Jogador -> Bool
-                                                                           verificaLinha4 (a1,a2) (h:t) (Jogador (x,y) d b)
-                                                                            |a2/=y-1 = False
-                                                                            |otherwise = if a1==x then case h of Bloco -> False
-                                                                                                                 Porta -> False
-                                                                                                                 Caixa -> False
-                                                                                                                 Vazio -> True
-                                                                                                  else verificaLinha4 (a1+1,a2) t (Jogador (x,y) d b)
-
-{-----------------------------------/4/-----------------------------------}
-{----------------------/4.1/----------------------}
-verificaInterageVazio :: (Int,Int) -> Jogo -> Bool
-verificaInterageVazio (a1,a2) (Jogo (p:ps) (Jogador (x,y) d b)) = case d of Oeste -> eVazio (0,0) (Jogo (p:ps) (Jogador (x-1,y) d b))
-                                                                            Este -> eVazio (0,0) (Jogo (p:ps) (Jogador (x+1,y) d b))
-
-eVazio :: (Int,Int) -> Jogo -> Bool
-eVazio (_,_) (Jogo [] (Jogador (_,_) _ _ )) = False
-eVazio (a1,a2) (Jogo (p:ps) (Jogador (x,y) d b)) = verificaLinha5 (0,a2) p (Jogador (x,y) d b) || eVazio (0,a2+1) (Jogo ps (Jogador (x,y) d b))
-                                                         where verificaLinha5 :: (Int,Int) -> [Peca] -> Jogador -> Bool
-                                                               verificaLinha5 (a1,a2) (h:t) (Jogador (x,y) d b)
-                                                                |a2/=y = False
-                                                                |otherwise = if a1==x then case h of Bloco -> False
-                                                                                                     Porta -> False
-                                                                                                     Caixa -> False
-                                                                                                     Vazio -> True
-                                                                                           else verificaLinha5 (a1+1,a2) t (Jogador (x,y) d b)
-
-mapaPousarCaixa :: (Int,Int) -> Jogo -> Mapa
-mapaPousarCaixa (0,0) (Jogo (p:ps) (Jogador (x,y) d b))
- |d==Oeste = mapaPousarCaixaOeste (0,0) (0,0) (Jogo (p:ps) (Jogador (x,y) d b))
- |d==Este = mapaPousarCaixaEste (0,0) (0,0) (Jogo (p:ps) (Jogador (x,y) d b))
-
-mapaPousarCaixaOeste :: (Int,Int) -> (Int,Int) -> Jogo -> Mapa
-mapaPousarCaixaOeste (_,_) (_,_) (Jogo [] (Jogador (x,y) d b)) = []
-mapaPousarCaixaOeste (c1,c2) (v1,v2) (Jogo (p:ps) (Jogador (x,y) d b)) = constroiLinhaOeste (0,c2) (0,v2) p (Jogador (x,y) d b) : mapaPousarCaixaOeste (0,c2+1) (0,v2+1) (Jogo ps (Jogador (x,y) d b))
-                                                                        where constroiLinhaOeste :: (Int,Int) -> (Int,Int) -> [Peca] -> Jogador -> [Peca]
-                                                                              constroiLinhaOeste (_,_) (_,_) [] _ = []
-                                                                              constroiLinhaOeste (c1,c2) (v1,v2) (h:t) (Jogador (x,y) d b)
-                                                                               |c2/=y && v2/=y-1 = h : constroiLinhaOeste (c1+1,c2) (v1+1,v2) t (Jogador (x,y) d b)
-                                                                               |c2==y = if c1==x-1 then Caixa : constroiLinhaOeste (c1+1,c2) (v1+1,v2) t (Jogador (x,y) d b)
-                                                                                                   else h : constroiLinhaOeste (c1+1,c2) (v1+1,v2) t (Jogador (x,y) d b)
-                                                                               |v2==y-1 = if v1==x then Vazio : constroiLinhaOeste (c1+1,c2) (v1+1,v2) t (Jogador (x,y) d b)
-                                                                                                   else h : constroiLinhaOeste (c1+1,c2) (v1+1,v2) t (Jogador (x,y) d b)
-
-mapaPousarCaixaEste :: (Int,Int) -> (Int,Int) -> Jogo -> Mapa
-mapaPousarCaixaEste (_,_) (_,_) (Jogo [] (Jogador (x,y) d b)) = []
-mapaPousarCaixaEste (c1,c2) (v1,v2) (Jogo (p:ps) (Jogador (x,y) d b)) = constroiLinhaOeste (0,c2) (0,v2) p (Jogador (x,y) d b) : mapaPousarCaixaEste (0,c2+1) (0,v2+1) (Jogo ps (Jogador (x,y) d b))
-                                                                        where constroiLinhaOeste :: (Int,Int) -> (Int,Int) -> [Peca] -> Jogador -> [Peca]
-                                                                              constroiLinhaOeste (_,_) (_,_) [] _ = []
-                                                                              constroiLinhaOeste (c1,c2) (v1,v2) (h:t) (Jogador (x,y) d b)
-                                                                               |c2/=y && v2/=y-1 = h : constroiLinhaOeste (c1+1,c2) (v1+1,v2) t (Jogador (x,y) d b)
-                                                                               |c2==y = if c1==x+1 then Caixa : constroiLinhaOeste (c1+1,c2) (v1+1,v2) t (Jogador (x,y) d b)
-                                                                                                   else h : constroiLinhaOeste (c1+1,c2) (v1+1,v2) t (Jogador (x,y) d b)
-                                                                               |v2==y-1 = if v1==x then Vazio : constroiLinhaOeste (c1+1,c2) (v1+1,v2) t (Jogador (x,y) d b)
-                                                                                                   else h : constroiLinhaOeste (c1+1,c2) (v1+1,v2) t (Jogador (x,y) d b)
-
-
-{----------------------/4.2/----------------------}
-
-verificaInterageVazioCima :: (Int,Int) -> Jogo -> Bool
-verificaInterageVazioCima (a1,a2) (Jogo (p:ps) (Jogador (x,y) d b)) = case d of Oeste -> eVazio (0,0) (Jogo (p:ps) (Jogador (x-1,y-1) d b)) && eBlocoOuCaixa (0,0) (Jogo (p:ps) (Jogador (x-1,y) d b))
-                                                                                Este -> eVazio (0,0) (Jogo (p:ps) (Jogador (x+1,y-1) d b)) && eBlocoOuCaixa (0,0) (Jogo (p:ps) (Jogador (x+1,y) d b))
-
-mapaPousarCaixaCima :: (Int,Int) -> Jogo -> Mapa
-mapaPousarCaixaCima (0,0) (Jogo (p:ps) (Jogador (x,y) d b))
- |d==Oeste = mapaPousarCaixaOeste (0,0) (0,0) (Jogo (p:ps) (Jogador (x,y) d b))
- |d==Este = mapaPousarCaixaEste (0,0) (0,0) (Jogo (p:ps) (Jogador (x,y) d b))
-
-mapaPousarCaixaOesteCima :: (Int,Int) -> (Int,Int) -> Jogo -> Mapa
-mapaPousarCaixaOesteCima (_,_) (_,_) (Jogo [] (Jogador (x,y) d b)) = []
-mapaPousarCaixaOesteCima (c1,c2) (v1,v2) (Jogo (p:ps) (Jogador (x,y) d b)) = constroiLinhaOeste (0,c2) (0,v2) p (Jogador (x,y) d b) : mapaPousarCaixaOesteCima (0,c2+1) (0,v2+1) (Jogo ps (Jogador (x,y) d b))
-                                                                        where constroiLinhaOeste :: (Int,Int) -> (Int,Int) -> [Peca] -> Jogador -> [Peca]
-                                                                              constroiLinhaOeste (_,_) (_,_) [] _ = []
-                                                                              constroiLinhaOeste (c1,c2) (v1,v2) (h:t) (Jogador (x,y) d b)
-                                                                               |c2/=y-2 && v2/=y-1 = h : constroiLinhaOeste (c1+1,c2) (v1+1,v2) t (Jogador (x,y) d b)
-                                                                               |c2==y-2 = if c1==x-1 then Caixa : constroiLinhaOeste (c1+1,c2) (v1+1,v2) t (Jogador (x,y) d b)
-                                                                                                   else h : constroiLinhaOeste (c1+1,c2) (v1+1,v2) t (Jogador (x,y) d b)
-                                                                               |v2==y-1 = if v1==x then Vazio : constroiLinhaOeste (c1+1,c2) (v1+1,v2) t (Jogador (x,y) d b)
-                                                                                                   else h : constroiLinhaOeste (c1+1,c2) (v1+1,v2) t (Jogador (x,y) d b)
-
-mapaPousarCaixaEsteCima :: (Int,Int) -> (Int,Int) -> Jogo -> Mapa
-mapaPousarCaixaEsteCima (_,_) (_,_) (Jogo [] (Jogador (x,y) d b)) = []
-mapaPousarCaixaEsteCima (c1,c2) (v1,v2) (Jogo (p:ps) (Jogador (x,y) d b)) = constroiLinhaOeste (0,c2) (0,v2) p (Jogador (x,y) d b) : mapaPousarCaixaEsteCima (0,c2+1) (0,v2+1) (Jogo ps (Jogador (x,y) d b))
-                                                                        where constroiLinhaOeste :: (Int,Int) -> (Int,Int) -> [Peca] -> Jogador -> [Peca]
-                                                                              constroiLinhaOeste (_,_) (_,_) [] _ = []
-                                                                              constroiLinhaOeste (c1,c2) (v1,v2) (h:t) (Jogador (x,y) d b)
-                                                                               |c2/=y-2 && v2/=y-1 = h : constroiLinhaOeste (c1+1,c2) (v1+1,v2) t (Jogador (x,y) d b)
-                                                                               |c2==y-2 = if c1==x+1 then Caixa : constroiLinhaOeste (c1+1,c2) (v1+1,v2) t (Jogador (x,y) d b)
-                                                                                                   else h : constroiLinhaOeste (c1+1,c2) (v1+1,v2) t (Jogador (x,y) d b)
-                                                                               |v2==y-1 = if v1==x then Vazio : constroiLinhaOeste (c1+1,c2) (v1+1,v2) t (Jogador (x,y) d b)
-                                                                                                   else h : constroiLinhaOeste (c1+1,c2) (v1+1,v2) t (Jogador (x,y) d b)
-
-
-{-----------------------------------/5/-----------------------------------}
-
-mapaAndarCaixa :: (Int,Int) -> Jogo -> Mapa
-mapaAndarCaixa (0,0) (Jogo (p:ps) (Jogador (x,y) d b))
- |d==Oeste = mapaAndarCaixaOeste (0,0) (0,0) (Jogo (p:ps) (Jogador (x,y) d b))
- |d==Este = mapaAndarCaixaEste (0,0) (0,0) (Jogo (p:ps) (Jogador (x,y) d b))
-
-mapaAndarCaixaOeste :: (Int,Int) -> (Int,Int) -> Jogo -> Mapa
-mapaAndarCaixaOeste (_,_) (_,_) (Jogo [] (Jogador (x,y) d b)) = []
-mapaAndarCaixaOeste (c1,c2) (v1,v2) (Jogo (p:ps) (Jogador (x,y) d b)) = constroiLinhaOeste (0,c2) (0,v2) p (Jogador (x,y) d b) : mapaAndarCaixaOeste (0,c2+1) (0,v2+1) (Jogo ps (Jogador (x,y) d b))
-                                                                        where constroiLinhaOeste :: (Int,Int) -> (Int,Int) -> [Peca] -> Jogador -> [Peca]
-                                                                              constroiLinhaOeste (_,_) (_,_) [] _ = []
-                                                                              constroiLinhaOeste (c1,c2) (v1,v2) (h:t) (Jogador (x,y) d b)
-                                                                               |c2==y-1 && c1==x-1 = Caixa : constroiLinhaOeste (c1+1,c2) (v1+1,v2) t (Jogador (x,y) d b)
-                                                                               |v2==y-1 && v1==x = Vazio : constroiLinhaOeste (c1+1,c2) (v1+1,v2) t (Jogador (x,y) d b)
-                                                                               |otherwise = h : constroiLinhaOeste (c1+1,c2) (v1+1,v2) t (Jogador (x,y) d b)
-
-mapaAndarCaixaEste :: (Int,Int) -> (Int,Int) -> Jogo -> Mapa
-mapaAndarCaixaEste (_,_) (_,_) (Jogo [] (Jogador (x,y) d b)) = []
-mapaAndarCaixaEste (c1,c2) (v1,v2) (Jogo (p:ps) (Jogador (x,y) d b)) = constroiLinhaOeste (0,c2) (0,v2) p (Jogador (x,y) d b) : mapaAndarCaixaOeste (0,c2+1) (0,v2+1) (Jogo ps (Jogador (x,y) d b))
-                                                                        where constroiLinhaOeste :: (Int,Int) -> (Int,Int) -> [Peca] -> Jogador -> [Peca]
-                                                                              constroiLinhaOeste (_,_) (_,_) [] _ = []
-                                                                              constroiLinhaOeste (c1,c2) (v1,v2) (h:t) (Jogador (x,y) d b)
-                                                                               |c2==y-1 && c1==x+1 = Caixa : constroiLinhaOeste (c1+1,c2) (v1+1,v2) t (Jogador (x,y) d b)
-                                                                               |v2==y-1 && v1==x = Vazio : constroiLinhaOeste (c1+1,c2) (v1+1,v2) t (Jogador (x,y) d b)
-                                                                               |otherwise = h : constroiLinhaOeste (c1+1,c2) (v1+1,v2) t (Jogador (x,y) d b)
-
-{-----------------------------------/6/-----------------------------------}
-
-mapaTreparCaixa :: (Int,Int) -> Jogo -> Mapa
-mapaTreparCaixa (0,0) (Jogo (p:ps) (Jogador (x,y) d b))
- |d==Oeste = mapaTreparCaixaOeste (0,0) (0,0) (Jogo (p:ps) (Jogador (x,y) d b))
- |d==Este = mapaTreparCaixaEste (0,0) (0,0) (Jogo (p:ps) (Jogador (x,y) d b))
-
-mapaTreparCaixaOeste :: (Int,Int) -> (Int,Int) -> Jogo -> Mapa
-mapaTreparCaixaOeste (_,_) (_,_) (Jogo [] (Jogador (x,y) d b)) = []
-mapaTreparCaixaOeste (c1,c2) (v1,v2) (Jogo (p:ps) (Jogador (x,y) d b)) = constroiLinhaOeste (0,c2) (0,v2) p (Jogador (x,y) d b) : mapaTreparCaixaOeste (0,c2+1) (0,v2+1) (Jogo ps (Jogador (x,y) d b))
-                                                                        where constroiLinhaOeste :: (Int,Int) -> (Int,Int) -> [Peca] -> Jogador -> [Peca]
-                                                                              constroiLinhaOeste (_,_) (_,_) [] _ = []
-                                                                              constroiLinhaOeste (c1,c2) (v1,v2) (h:t) (Jogador (x,y) d b)
-                                                                               |c2==y-2 && c1==x-1 = Caixa : constroiLinhaOeste (c1+1,c2) (v1+1,v2) t (Jogador (x,y) d b)
-                                                                               |v2==y-1 && v1==x = Vazio : constroiLinhaOeste (c1+1,c2) (v1+1,v2) t (Jogador (x,y) d b)
-                                                                               |otherwise = h : constroiLinhaOeste (c1+1,c2) (v1+1,v2) t (Jogador (x,y) d b)
-
-mapaTreparCaixaEste :: (Int,Int) -> (Int,Int) -> Jogo -> Mapa
-mapaTreparCaixaEste (_,_) (_,_) (Jogo [] (Jogador (x,y) d b)) = []
-mapaTreparCaixaEste (c1,c2) (v1,v2) (Jogo (p:ps) (Jogador (x,y) d b)) = constroiLinhaOeste (0,c2) (0,v2) p (Jogador (x,y) d b) : mapaTreparCaixaEste (0,c2+1) (0,v2+1) (Jogo ps (Jogador (x,y) d b))
-                                                                        where constroiLinhaOeste :: (Int,Int) -> (Int,Int) -> [Peca] -> Jogador -> [Peca]
-                                                                              constroiLinhaOeste (_,_) (_,_) [] _ = []
-                                                                              constroiLinhaOeste (c1,c2) (v1,v2) (h:t) (Jogador (x,y) d b)
-                                                                               |c2==y-2 && c1==x+1 = Caixa : constroiLinhaOeste (c1+1,c2) (v1+1,v2) t (Jogador (x,y) d b)
-                                                                               |v2==y-1 && v1==x = Vazio : constroiLinhaOeste (c1+1,c2) (v1+1,v2) t (Jogador (x,y) d b)
-                                                                               |otherwise = h : constroiLinhaOeste (c1+1,c2) (v1+1,v2) t (Jogador (x,y) d b)
-
-
-
-{-
+pecaCoordenada :: Int -> [(Peca,Coordenadas)] -> Int
+pecaCoordenada y1 ((x,(x2,y2)):xs)
+ |y1 == y2-1 && x == Vazio = pecaCoordenada (y1+1) xs
+ |y1 == y2-1 && (x == Bloco || x == Caixa || x == Porta) = y1
+ |otherwise = pecaCoordenada y1 xs
 
 correrMovimentos :: Jogo -> [Movimento] -> Jogo
-correrMovimentos j [] = j
-correrMovimentos j (h:t) = correrMovimentos (moveJogador j h) t
+correrMovimentos = foldl moveJogador
 
--}
--- [[Vazio, Vazio, Vazio, Vazio, Vazio, Vazio, Bloco],[Vazio, Vazio, Vazio, Vazio, Vazio, Vazio, Bloco],[Porta, Vazio, Vazio, Vazio, Caixa, Vazio, Bloco],[Bloco, Bloco, Bloco, Bloco, Bloco, Bloco, Bloco]]
-
+--random utilities
+--[Vazio, Vazio, Vazio, Vazio, Vazio, Vazio, Bloco],[Vazio, Vazio, Vazio, Vazio, Vazio, Vazio, Bloco],[Porta, Vazio, Vazio, Vazio, Caixa, Vazio, Bloco],[Bloco, Bloco, Bloco, Bloco, Bloco, Bloco, Bloco]
 -- [[Vazio,Vazio,Vazio,Vazio,Vazio,Bloco,Bloco,Bloco,Vazio,Vazio,Vazio,Vazio,Bloco,Bloco,Bloco,Bloco,Bloco,Bloco,Bloco,Bloco,Bloco,Vazio],[Vazio,Bloco,Bloco,Bloco,Bloco,Vazio,Vazio,Vazio,Bloco,Bloco,Bloco,Bloco,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio,Bloco],[Bloco,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio,Bloco],[Bloco,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio,Bloco],[Bloco,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio,Bloco],[Bloco,Vazio,Vazio,Vazio,Vazio,Vazio,Bloco,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio,Bloco],[Bloco,Vazio,Vazio,Vazio,Vazio,Vazio,Bloco,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio,Bloco],[Bloco,Vazio,Vazio,Vazio,Vazio,Vazio,Bloco,Caixa,Caixa,Caixa,Caixa,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio,Bloco],[Bloco,Porta,Vazio,Vazio,Vazio,Bloco,Bloco,Bloco,Bloco,Bloco,Bloco,Bloco,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio,Bloco],[Bloco,Bloco,Vazio,Bloco,Bloco,Bloco,Vazio,Vazio,Vazio,Vazio,Vazio,Bloco,Bloco,Vazio,Bloco,Vazio,Vazio,Vazio,Vazio,Vazio,Caixa,Bloco],[Vazio,Bloco,Vazio,Bloco,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio,Bloco,Vazio,Bloco,Bloco,Vazio,Vazio,Vazio,Caixa,Caixa,Bloco],[Vazio,Bloco,Vazio,Bloco,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio,Bloco,Vazio,Bloco,Bloco,Vazio,Vazio,Caixa,Caixa,Caixa,Bloco],[Vazio,Bloco,Bloco,Bloco,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio,Bloco,Vazio,Bloco,Bloco,Bloco,Bloco,Bloco,Bloco,Bloco,Bloco],[Vazio,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio,Bloco,Bloco,Bloco,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio]]
+
+
+
