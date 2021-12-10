@@ -106,5 +106,3 @@ descreveLinha (x,y) (Jogador c d b) (a:t) = (case a of Bloco -> "X"
                                                        Caixa -> "C") ++ descreveLinha (x+1,y) (Jogador c d b) t
 
 
-
-
