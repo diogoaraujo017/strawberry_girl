@@ -35,13 +35,25 @@ import Data.ByteString.Builder.Extra (Next)
 
 
 data Opcoes = Jogar
-            | Mapas
+            | Mapas 
             | Sair
 
 data Opcoes1 = Next
              | Menu
 
+data Mapa = Level1
+           | Level2
+           | Level3
+           | Level4
+           | Level5
+           | Level6
+           | Level7
+           | Level8
+           | Level9
+           | Level10
+
 data Menu = Controlador Opcoes
+          | Mapas Mapas 
           | Jogando 
           | VenceuJogo Opcoes1
 
@@ -51,11 +63,11 @@ data BlockDude = Direita
                | CarregandoE
     deriving Eq
 
-data Mundo = Mundo Picture Jogador
+data Mundo = Mundo String String
 
 type Imagens = [(BlockDude, Picture)]
 
-type World = (Menu, Jogo, Mundo, Imagens)
+type World = (Menu, Jogo, Mapa, Imagens)
 
 window :: Display
 window = FullScreen
@@ -65,11 +77,11 @@ fr = 30
 
 --desenha os textos
 draw :: World -> Picture
-draw (VenceuJogo Next, jogo, mundo, imagens) = Pictures [Translate (-200) 0 $ Color red $ Text "Ganhou :)"]
-draw (VenceuJogo Menu, jogo, mundo, imagens) = Pictures [Translate (-200) 0 $ Color red $ Text "Ganhou :)"]
-draw (Controlador Jogar, jogo,mundo, imagens) = Pictures [Color blue $ drawOption "Jogar",Translate 0 (-140) $ drawOption "Mapas", Translate 0 (-280) $ drawOption "Sair"]
-draw (Controlador Mapas, jogo, mundo, imagens) = Pictures [drawOption "Jogar",Color blue $ Translate 0 (-140) $ drawOption "Mapas" , Translate 0 (-280) $ drawOption "Sair"]
-draw (Controlador Sair, jogo, mundo, imagens) = Pictures [drawOption "Jogar",Translate 0 (-140) $ drawOption "Mapas", Color blue $ Translate 0 (-280) $ drawOption "Sair"]
+draw (VenceuJogo Next, jogo, mundo, imagens) = Pictures [Translate (-200) 0 $ Color red $ Text "== WIN =="]
+draw (VenceuJogo Menu, jogo, mundo, imagens) = Pictures [Translate (-200) 0 $ Color red $ Text "== WIN =="]
+draw (Controlador Jogar, jogo,mundo, imagens) = Pictures [Color blue $ drawOption "PLAY",Translate 0 (-140) $ drawOption "MAPS", Translate 0 (-280) $ drawOption "EXIT"]
+draw (Controlador Mapas, jogo, mundo, imagens) = Pictures [drawOption "PLAY",Color blue $ Translate 0 (-140) $ drawOption "MAPS" , Translate 0 (-280) $ drawOption "EXIT"]
+draw (Controlador Sair, jogo, mundo, imagens) = Pictures [drawOption "PLAY",Translate 0 (-140) $ drawOption "MAPS", Color blue $ Translate 0 (-280) $ drawOption "EXIT"]
 
 -- desenha uma certa string no ecra
 drawOption :: String -> Picture
@@ -77,23 +89,52 @@ drawOption option = Translate (-160) 100 $ Scale 1 1 $ Text option
 
 -- atribui funções as teclas
 event :: Event -> World -> World
-event (EventKey (SpecialKey KeyEnter) Down _ _) (Controlador Jogar, jogo, mundo, imagens) = (Jogando , jogo, mundo, imagens)
+event (EventKey (SpecialKey KeyEnter) Down _ _) (Controlador Jogar, jogo, mapa, imagens) = (Jogando , jogo, mundo, imagens)
 event (EventKey (SpecialKey KeyUp) Down _ _) (Controlador Jogar, jogo, mundo, imagens) = (Controlador Sair, jogo, mundo, imagens)
 event (EventKey (SpecialKey KeyDown) Down _ _) (Controlador Jogar, jogo, mundo, imagens) = (Controlador Mapas, jogo, mundo, imagens)
 event (EventKey (SpecialKey KeyDown) Down _ _) (Controlador Mapas, jogo, mundo, imagens) = (Controlador Sair, jogo, mundo, imagens)
+event (EventKey (SpecialKey KeyEnter ) Down _ _) (Controlador Mapas, jogo, mundo, imagens) = (Mapas Level1, jogo, mundo, imagens)
 event (EventKey (SpecialKey KeyUp) Down _ _) (Controlador Mapas, jogo, mundo, imagens) = (Controlador Jogar, jogo, mundo, imagens)
 event (EventKey (SpecialKey KeyUp) Down _ _) (Controlador Sair, jogo, mundo, imagens) = (Controlador Mapas, jogo, mundo, imagens)
 event (EventKey (SpecialKey KeyDown) Down _ _) (Controlador Sair, jogo, mundo, imagens) = (Controlador Jogar, jogo, mundo, imagens)
-
-
-event (EventKey (SpecialKey KeyEnter) Down _ _) (VenceuJogo Next, jogo, mundo, imagens) = 
+event (EventKey (SpecialKey KeyEnter) Down _ _) (VenceuJogo Next, jogo, mundo, imagens) = (Jogando , jogo, nextMundo mundo, imagens)
 event (EventKey (SpecialKey KeyEnter) Down _ _) (VenceuJogo Menu, jogo, mundo, imagens) = (Controlador Jogar, jogo, mundo, imagens)
-
-
 event (EventKey (SpecialKey KeyUp) Down _ _) (VenceuJogo Next, jogo, mundo, imagens) = (VenceuJogo Menu, jogo, mundo, imagens)
 event (EventKey (SpecialKey KeyDown) Down _ _) (VenceuJogo Menu, jogo, mundo, imagens) = (VenceuJogo Next, jogo, mundo, imagens)
 event (EventKey (SpecialKey KeyUp) Down _ _) (VenceuJogo Menu, jogo, mundo, imagens) = (VenceuJogo Next, jogo, mundo, imagens)
 event (EventKey (SpecialKey KeyDown) Down _ _) (VenceuJogo Next, jogo, mundo, imagens) = (VenceuJogo Menu, jogo, mundo, imagens)
+event (EventKey (SpecialKey KeyRight) Down _ _) (Mapas Level10, jogo, mundo, imagens) = (Mapas Level10, jogo, mundo, imagens)
+event (EventKey (SpecialKey KeyRight) Down _ _) (Mapas Level1, jogo, mundo, imagens) = (Mapas Level2, jogo, mundo, imagens)
+event (EventKey (SpecialKey KeyRight) Down _ _) (Mapas Level2, jogo, mundo, imagens) = (Mapas Level3, jogo, mundo, imagens)
+event (EventKey (SpecialKey KeyRight) Down _ _) (Mapas Level3, jogo, mundo, imagens) = (Mapas Level4, jogo, mundo, imagens)
+event (EventKey (SpecialKey KeyRight) Down _ _) (Mapas Level4, jogo, mundo, imagens) = (Mapas Level5, jogo, mundo, imagens)
+event (EventKey (SpecialKey KeyRight) Down _ _) (Mapas Level6, jogo, mundo, imagens) = (Mapas Level7, jogo, mundo, imagens)
+event (EventKey (SpecialKey KeyRight) Down _ _) (Mapas Level7, jogo, mundo, imagens) = (Mapas Level8, jogo, mundo, imagens)
+event (EventKey (SpecialKey KeyRight) Down _ _) (Mapas Level8, jogo, mundo, imagens) = (Mapas Level9, jogo, mundo, imagens)
+event (EventKey (SpecialKey KeyRight) Down _ _) (Mapas Level9, jogo, mundo, imagens) = (Mapas Level10, jogo, mundo, imagens)
+event (EventKey (SpecialKey KeyLeft) Down _ _) (Mapas Level1, jogo, mundo, imagens) = (Mapas Level1, jogo, mundo, imagens)
+event (EventKey (SpecialKey KeyLeft) Down _ _) (Mapas Level10, jogo, mundo, imagens) = (Mapas Level9, jogo, mundo, imagens)
+event (EventKey (SpecialKey KeyLeft) Down _ _) (Mapas Level9, jogo, mundo, imagens) = (Mapas Level8, jogo, mundo, imagens)
+event (EventKey (SpecialKey KeyLeft) Down _ _) (Mapas Level8, jogo, mundo, imagens) = (Mapas Level7, jogo, mundo, imagens)
+event (EventKey (SpecialKey KeyLeft) Down _ _) (Mapas Level7, jogo, mundo, imagens) = (Mapas Level6, jogo, mundo, imagens)
+event (EventKey (SpecialKey KeyLeft) Down _ _) (Mapas Level6, jogo, mundo, imagens) = (Mapas Level5, jogo, mundo, imagens)
+event (EventKey (SpecialKey KeyLeft) Down _ _) (Mapas Level5, jogo, mundo, imagens) = (Mapas Level4, jogo, mundo, imagens)
+event (EventKey (SpecialKey KeyLeft) Down _ _) (Mapas Level4, jogo, mundo, imagens) = (Mapas Level3, jogo, mundo, imagens)
+event (EventKey (SpecialKey KeyLeft) Down _ _) (Mapas Level3, jogo, mundo, imagens) = (Mapas Level2, jogo, mundo, imagens)
+event (EventKey (SpecialKey KeyLeft) Down _ _) (Mapas Level2, jogo, mundo, imagens) = (Mapas Level1, jogo, mundo, imagens)
+
+event (EventKey (SpecialKey KeyEnter) Down _ _) (Mapas Level1, jogo, mundo, imagens) = (Mapas Level1, jogo, mundo, imagens)
+event (EventKey (SpecialKey KeyEnter) Down _ _) (Mapas Level10, jogo, mundo, imagens) = (Mapas Level9, jogo, mundo, imagens)
+event (EventKey (SpecialKey KeyEnter) Down _ _) (Mapas Level9, jogo, mundo, imagens) = (Mapas Level8, jogo, mundo, imagens)
+event (EventKey (SpecialKey KeyEnter) Down _ _) (Mapas Level8, jogo, mundo, imagens) = (Mapas Level7, jogo, mundo, imagens)
+event (EventKey (SpecialKey KeyEnter) Down _ _) (Mapas Level7, jogo, mundo, imagens) = (Mapas Level6, jogo, mundo, imagens)
+event (EventKey (SpecialKey KeyEnter) Down _ _) (Mapas Level6, jogo, mundo, imagens) = (Mapas Level5, jogo, mundo, imagens)
+event (EventKey (SpecialKey KeyEnter) Down _ _) (Mapas Level5, jogo, mundo, imagens) = (Mapas Level4, jogo, mundo, imagens)
+event (EventKey (SpecialKey KeyEnter) Down _ _) (Mapas Level4, jogo, mundo, imagens) = (Mapas Level3, jogo, mundo, imagens)
+event (EventKey (SpecialKey KeyEnter) Down _ _) (Mapas Level3, jogo, mundo, imagens) = (Mapas Level2, jogo, mundo, imagens)
+event (EventKey (SpecialKey KeyEnter) Down _ _) (Mapas Level2, jogo, mundo, imagens) = (Mapas Level1, jogo, mundo, imagens)
+
+
 event _ (Jogando, Jogo m (Jogador (x,y) d b), mundo, imagens) = if coordPorta (0,0) (Jogo m (Jogador (x,y) d b))
                                                                      then (VenceuJogo Next,Jogo m (Jogador (x,y) d b), mundo, imagens)
                                                                      else (Jogando, Jogo m (Jogador (x,y) d b), mundo, imagens)
@@ -107,6 +148,22 @@ coordPorta (x1,y1) (Jogo ((h:t):ps) (Jogador (x2,y2) d b))
  |h == Porta && x1 == x2 && y1 == y2 = True
  |otherwise = coordPorta (x1+1,y2) (Jogo (t:ps) (Jogador (x2,y2) d b))
 
+--------
+nextMundo :: Mundo -> Mundo 
+nextMundo Mundo m p = 
+ |m == Level1 = Mundo Level2 Player 
+ |m == Level2 = Mundo Level3 p
+ |m == Level3 = Mundo Level4 p
+ |m == Level4 = Mundo Level5 p
+ |m == Level5 = Mundo Level6 p
+ |m == Level6 = Mundo Level7 p
+ |m == Level7 = Mundo Level8 p
+ |m == Level8 = Mundo Level9 p
+ |m == Level9 = Mundo Level10 p
+
+
+
+
 {-main :: IO ()
 main = do
   blockdude_direita <- loadBMP "assets/blockdude_direita.bmp"
@@ -118,17 +175,17 @@ main = do
   
   let imagens = [(Direita, blockdude_direita), (Esquerda, blockdude_esquerda), (CarregandoE,blockdude_caixaE), (CarregandoD,blockdude_caixaD)]
 
-  let estado1 = (Controlador Jogar, Mundo level1 player1, imagens)
-  let estado2 = (Controlador Jogar, Mundo level2 player2, imagens)
-  let estado3 = (Controlador Jogar, Mundo level3 player3, imagens)
-  let estado4 = (Controlador Jogar, Mundo level4 player4, imagens)
-  let estado5 = (Controlador Jogar, Mundo level5 player5, imagens)
-  let estado6 = (Controlador Jogar, Mundo level6 player6, imagens)
-  let estado7 = (Controlador Jogar, Mundo level7 player7, imagens)
-  let estado8 = (Controlador Jogar, Mundo level8 player8, imagens)
-  let estado9 = (Controlador Jogar, Mundo level9 player9, imagens)
-  let estado10 = (Controlador Jogar, Mundo level10 player10, imagens)
-
+  let jogando1 = (Controlador Jogando, Jogo level1 player1 , Mundo level1 player1, imagens)
+  let next2 = (Controlador Jogando, Jogo level2 player2 , Mundo level2 player2, imagens)
+  let next3 = (Controlador Jogando, Jogo level3 player3 , Mundo level3 player3, imagens)
+  let next4 = (Controlador Jogando, Jogo level4 player4 , Mundo level4 player4, imagens)
+  let next5 = (Controlador Jogando, Jogo level5 player5 , Mundo level5 player5, imagens)
+  let next6 = (Controlador Jogando, Jogo level6 player6 , Mundo level6 player6, imagens)
+  let next7 = (Controlador Jogando, Jogo level7 player7 , Mundo level7 player7, imagens)
+  let next8 = (Controlador Jogando, Jogo level8 player8 , Mundo level8 player8, imagens)
+  let next9 = (Controlador Jogando, Jogo level9 player9 , Mundo level9 player9, imagens)
+  let next10 = (Controlador Jogando, Jogo level10 player10 , Mundo level10 player10, imagens)
+  
   play window white fr loadCertoEstado draw event 
  
 data HighScore = Integer
