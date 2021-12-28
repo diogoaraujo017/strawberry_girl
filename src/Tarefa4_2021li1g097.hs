@@ -131,16 +131,16 @@ moveJogador (Jogo (p:ps) (Jogador (x,y) d b)) m
                        else if podeLargar (0,0) (Jogo (p:ps) (Jogador (x,y) d b)) 
                             then if vaiAtirar (0,0) (Jogo (p:ps) (Jogador (x,y) d b))
                                  then if d == Oeste
-                                      then Jogo (constroiMapa (removeCaixa  ++ [(Caixa,(x-1,pecaCoordenada y (certaColuna (x-1) (0,0) (p:ps))))]))  (Jogador (x,y) Oeste b) 
-                                      else Jogo (constroiMapa (removeCaixa  ++ [(Caixa,(x+1,pecaCoordenada y (certaColuna (x+1) (0,0) (p:ps))))]))  (Jogador (x,y) Este b)
+                                      then Jogo (constroiMapa (removeCaixa  ++ [(Caixa,(x-1,pecaCoordenada y (certaColuna (x-1) (0,0) (p:ps))))]))  (Jogador (x,y) Oeste False) 
+                                      else Jogo (constroiMapa (removeCaixa  ++ [(Caixa,(x+1,pecaCoordenada y (certaColuna (x+1) (0,0) (p:ps))))]))  (Jogador (x,y) Este False )
                                  else if vazioFrente (0,0) (Jogo (p:ps) (Jogador (x,y) d b))     
                                       then if d == Oeste 
-                                           then Jogo (constroiMapa (removeCaixa  ++ [(Caixa,(x-1,y))]))  (Jogador (x,y) Oeste b)
-                                           else Jogo (constroiMapa (removeCaixa  ++ [(Caixa,(x+1,y))]))  (Jogador (x,y) Este b) 
+                                           then Jogo (constroiMapa (removeCaixa  ++ [(Caixa,(x-1,y))]))  (Jogador (x,y) Oeste False)
+                                           else Jogo (constroiMapa (removeCaixa  ++ [(Caixa,(x+1,y))]))  (Jogador (x,y) Este False) 
                                       else if d == Oeste 
-                                           then Jogo (constroiMapa (removeCaixa  ++ [(Caixa,(x-1,y-1))])) (Jogador (x,y) Oeste b)      
-                                           else Jogo (constroiMapa (removeCaixa  ++ [(Caixa,(x+1,y-1))])) (Jogador (x,y) Este b) 
-                            else Jogo (p:ps) (Jogador (x,y) d b) 
+                                           then Jogo (constroiMapa (removeCaixa  ++ [(Caixa,(x-1,y-1))])) (Jogador (x,y) Oeste False)      
+                                           else Jogo (constroiMapa (removeCaixa  ++ [(Caixa,(x+1,y-1))])) (Jogador (x,y) Este False) 
+                            else Jogo (p:ps) (Jogador (x,y) d True) 
  where removeCaixa = removeCertaPeca (Caixa,(x,y-1)) (desconstroiMapa (p:ps))
 
 {- | A função 'vazioEmbaixo' vai verificar se existe um vazio embaixo do jogador
@@ -283,14 +283,14 @@ podeTrepar :: (Int,Int)       -- ^Acumulador de coordenadas que nos permite veri
 podeTrepar _ (Jogo [] Jogador {}) = False
 podeTrepar (x1,y1) (Jogo ([]:t) (Jogador (x2,y2) d b))  = podeTrepar (0,y1+1) (Jogo t (Jogador (x2,y2) d b))
 podeTrepar (x1,y1) (Jogo ((x:xs):t) (Jogador (x2,y2) Oeste b))
- |x1 == x2-1 && y1 == y2-1 = x == Vazio && a
+ |x1 == x2-1 && y1 == y2-1 = (x == Vazio || x == Porta) && a
  |x1 == x2 && y1 == y2-1 = x == Vazio && a
  |x1 == x2-1 && y1 == y2 = x == Bloco || x == Caixa
  |otherwise = a
  where a = podeTrepar (x1+1,y1) (Jogo (xs:t) (Jogador (x2,y2) Oeste b))
 podeTrepar (x1,y1) (Jogo ((x:xs):t) (Jogador (x2,y2) Este b))
  |x1 == x2 && y1 == y2-1 = x == Vazio && b
- |x1 == x2+1 && y1 == y2-1 = x == Vazio && b
+ |x1 == x2+1 && y1 == y2-1 = (x == Vazio || x == Porta) && b
  |x1 == x2+1 && y1 == y2 = x == Caixa || x == Bloco
  |otherwise = b
  where b = podeTrepar (x1+1,y1) (Jogo (xs:t) (Jogador (x2,y2) Este b))
@@ -332,14 +332,14 @@ podeTreparCaixa (_,y1) (Jogo ([]:t) (Jogador (x2,y2) d b)) = podeTreparCaixa (0,
 podeTreparCaixa (x1,y1) (Jogo ((x:xs):t) (Jogador (x2,y2) Oeste b))
  |x1 == x2-1 && y1 == y2-2 = x == Vazio && a
  |x1 == x2 && y1 == y2-2 = x == Vazio && a
- |x1 == x2-1 && y1 == y2-1 = x == Vazio && a
+ |x1 == x2-1 && y1 == y2-1 = (x == Vazio || x == Porta) && a
  |x1 == x2-1 && y1 == y2 = x == Bloco || x == Caixa
  |otherwise = a
  where a = podeTreparCaixa (x1+1,y1) (Jogo (xs:t) (Jogador (x2,y2) Oeste b))
 podeTreparCaixa (x1,y1) (Jogo ((x:xs):t) (Jogador (x2,y2) Este b))
  |x1 == x2 && y1 == y2-2 = x == Vazio && b
  |x1 == x2+1 && y1 == y2-2 = x == Vazio && b
- |x1 == x2+1 && y1 == y2-1 = x == Vazio && b
+ |x1 == x2+1 && y1 == y2-1 = (x == Vazio || x == Porta) && b
  |x1 == x2+1 && y1 == y2 = x == Bloco || x == Caixa
  |otherwise = b
  where b = podeTreparCaixa (x1+1,y1) (Jogo (xs:t) (Jogador (x2,y2) Este b))
@@ -478,7 +478,7 @@ vazioFrente (x1,y1) (Jogo ((x:xs):t) (Jogador (x2,y2) Oeste b))
  |otherwise = vazioFrente (x1+1,y1) (Jogo (xs:t) (Jogador (x2,y2) Oeste b))
 vazioFrente (x1,y1) (Jogo ((x:xs):t) (Jogador (x2,y2) Este b))
  |x1 == x2+1 && y1 == y2 = x == Vazio
- |otherwise = vazioFrente (x1+1,y1) (Jogo (xs:t) (Jogador (x2,y2) Oeste b))
+ |otherwise = vazioFrente (x1+1,y1) (Jogo (xs:t) (Jogador (x2,y2) Este b))
 
 {- | A função 'vaiAtirar' vai verificar se o jogador vai atirar uma caixa verificando se existe um
 vazio na diagonal embaixo e um vazio a sua frente em relação ao jogador.
