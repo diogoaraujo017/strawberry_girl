@@ -11,50 +11,18 @@ Módulo para a realização da Tarefa 5 do projeto de LI1 em 2021/22.
 -}
 module Tarefa5_2021li1g097 where
 
-import Mapas
-    ( level1,
-      level2,
-      level3,
-      level4,
-      level5,
-      level6,
-      level7,
-      level8,
-      level9,
-      level10,
-      player1,
-      player2,
-      player3,
-      player4,
-      player5,
-      player6,
-      player7,
-      player8,
-      player9,
-      player10 )
+import Mapas ( level1,level2,level3,level4,level5,level6,level7,level8,level9,level10,player1,player2,player3,player4,player5,player6,player7,player8,player9,player10 )
 import LI12122 ( Jogo (Jogo), Jogador (Jogador), Peca (Porta, Bloco), Mapa, Movimento (AndarDireita, AndarEsquerda, Trepar, InterageCaixa), Peca(Vazio), Peca(Caixa), Direcao (Oeste) )
 import Tarefa1_2021li1g097 ()
 import Tarefa2_2021li1g097 ()
 import Tarefa3_2021li1g097 (mostrarJogoAux)
 import Tarefa4_2021li1g097 (moveJogador)
-import Graphics.Gloss
-    ( blue,
-      green,
-      red,
-      white,
-      play,
-      loadBMP,
-      Display(InWindow, FullScreen),
-      Picture(Circle, Scale, Pictures, Text, Color, Translate), makeColor, azure, makeColorI, bitmap )
-import Graphics.Gloss.Interface.Pure.Game
-    ( Key(SpecialKey),
-      KeyState(Down),
-      SpecialKey(KeyRight, KeyLeft, KeyDown, KeyUp, KeyEnter, KeyF5, KeyBackspace, KeyEsc, KeySpace),
-      Event(EventKey) )
+import Graphics.Gloss( white,play,loadBMP,Display(InWindow, FullScreen),Picture(Circle, Scale, Pictures, Text, Color, Translate), makeColor, azure, makeColorI, bitmap )
+import Graphics.Gloss.Interface.Pure.Game ( Key(SpecialKey),KeyState(Down),SpecialKey(KeyRight, KeyLeft, KeyDown, KeyUp, KeyEnter, KeyF5, KeyBackspace, KeyEsc, KeySpace),Event(EventKey) )
 import Graphics.Gloss.Interface.Pure.Simulate ( Picture(Polygon) )
 import System.Console.Terminfo (restoreDefaultColors, Color)
 import Graphics.Gloss.Raster.Array
-
+import Graphics.Rendering.OpenGL (drawElementsInstanced)
 
 data Opcoes = Jogar
             | Mapas
@@ -77,7 +45,7 @@ data Opcoes3 = Menu3
 data Opcoes4 = Continuar1
              | Novo
              | Mapas1
-             | Controls2 
+             | Controls2
              | Sair2
             deriving (Eq)
 
@@ -94,14 +62,14 @@ data Mapas = Level1
            | Menu2
           deriving (Eq)
 
-data Menu = Controlador Opcoes 
+data Menu = Controlador Opcoes
           | Mapa Mapas Bool Mapas
-          | Jogando Mapas 
+          | Jogando Mapas
           | VenceuJogo Opcoes1 Mapas
           | Controls3 Bool Mapas
-          | VenceuUltimoJogo Opcoes2 
-          | Pausa Opcoes3 Mapas 
-          | Controlador2 Opcoes4 Mapas 
+          | VenceuUltimoJogo Opcoes2
+          | Pausa Opcoes3 Mapas
+          | Controlador2 Opcoes4 Mapas
           deriving (Eq)
 
 
@@ -117,103 +85,102 @@ fr :: Int
 fr = 60
 
 --desenha o mundo
-desenhaWorld :: World -> Picture
+drawWorld :: World -> Picture
 ----- desenha venceu ultimo jogo
-desenhaWorld (VenceuUltimoJogo Menu1, jogo, imagens) = Pictures [Translate (-200) 0 $ Color red $ Text "== WIN ==",Translate (-300) 0 $ Color blue $ Text ">MENU<",Translate (-400) 0 $ Text "EXIT"] -------
-desenhaWorld (VenceuUltimoJogo Sair1, jogo, imagens) = Pictures [Translate (-200) 0 $ Color red $ Text "== WIN ==",Translate (-300) 0 $ Text "MENU",Translate (-400) 0 $ Color blue $ Text ">EXIT<"] --------
+drawWorld (VenceuUltimoJogo Menu1, jogo, imagens) = Pictures [Scale 2.2 2.2   (head(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail imagens))))))))))))))))))))))))))))))))] -------
+drawWorld (VenceuUltimoJogo Sair1, jogo, imagens) = Pictures [Scale 2.2 2.2   (head(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail imagens)))))))))))))))))))))))))))))))))] --------
 --- desenha venceu jogo
-desenhaWorld (VenceuJogo Next l, jogo, imagens) = Pictures [Translate (-160) 100 $ Color red $ Text "== WIN ==",Translate 0 (-140) $ Color blue $ Text ">NEXT<",Translate 0 (-280) $ Text "EXIT"]--------- 
-desenhaWorld (VenceuJogo Menu l, jogo, imagens) = Pictures [Translate (-160) 100 $ Color red $ Text "== WIN ==",Translate 0 (-140) $ Text "NEXT",Translate 0 (-280) $ Color blue $ Text ">EXIT<"] ----------
+drawWorld (VenceuJogo Next l, jogo, imagens) = Pictures [Scale 2.2 2.2   (head(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail imagens)))))))))))))))))))))))))))))))]--------- 
+drawWorld (VenceuJogo Menu l, jogo, imagens) = Pictures [Scale 2.2 2.2   (head(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail imagens))))))))))))))))))))))))))))))] ----------
 ------ desenha pausa
-desenhaWorld (Pausa Continuar l, jogo, imagens) = Pictures [Translate (-200) 0 $ Color orange $ Text ">RESUME<", Translate (-600) 0 $ Text "MENU"] ----------
-desenhaWorld (Pausa Menu3 l, jogo, imagens) = Pictures [Translate (-200) 0 $  Text "RESUME", Translate (-600) 0 $ Color orange $ Text ">MENU<"] -------------
+drawWorld (Pausa Continuar l, jogo, imagens) = Pictures [ Scale 2.2 2.2  (head(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail imagens)))))))))))))))))]
+drawWorld (Pausa Menu3 l, jogo, imagens) = Pictures [Scale 2.2 2.2  (head(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail imagens))))))))))))))))]
 ----- desenha constrolador2
-desenhaWorld (Controlador2 Continuar1 l, jogo, imagens) = Pictures [Translate  0 0 $ Scale 2.2 2.2  (head(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail imagens)))))))))))] ----------
-desenhaWorld (Controlador2 Novo l, jogo, imagens) = Pictures [Translate  0 0 $ Scale 2.2 2.2  (head(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail imagens))))))))))))]  ------------
-desenhaWorld (Controlador2 Mapas1 l, jogo, imagens) = Pictures [Translate  0 0 $ Scale 2.2 2.2  (head(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail imagens)))))))))))))]  ---------
-desenhaWorld (Controlador2 Sair2 l, jogo, imagens) = Pictures [Translate  0 0 $ Scale 2.2 2.2  (head(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail imagens)))))))))))))))] --------------
-desenhaWorld (Controlador2 Controls2 l, jogo, imagens) = Pictures [Translate  0 0 $ Scale 2.2 2.2  (head(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail imagens))))))))))))))]
+drawWorld (Controlador2 Continuar1 l, jogo, imagens) = Pictures [ Scale 2.2 2.2  (head(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail imagens)))))))))))] 
+drawWorld (Controlador2 Novo l, jogo, imagens) = Pictures [ Scale 2.2 2.2  (head(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail imagens))))))))))))]  
+drawWorld (Controlador2 Mapas1 l, jogo, imagens) = Pictures [ Scale 2.2 2.2  (head(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail imagens)))))))))))))] 
+drawWorld (Controlador2 Sair2 l, jogo, imagens) = Pictures [ Scale 2.2 2.2  (head(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail imagens)))))))))))))))] 
+drawWorld (Controlador2 Controls2 l, jogo, imagens) = Pictures [ Scale 2.2 2.2  (head(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail imagens))))))))))))))]
 -----desenha lista mapas --------------
-desenhaWorld (Mapa Level1 b m, jogo, imagens) = Pictures [Translate (-400) 200 $ Color blue $ desenhaOpcao ">Level 1", Translate (-400)50 $ desenhaOpcao "Level 2", Translate (-400) (-90) $ desenhaOpcao "Level 3",Translate (-400) (-230) $ desenhaOpcao "Level 4",Translate (-400) (-370) $ desenhaOpcao "Level 5",Translate (-400) (-510) $ desenhaOpcao "Menu",Translate (250) 200 $ desenhaOpcao "Level 6", Translate 250 50 $ desenhaOpcao "Level 7", Translate 250 (-90) $ desenhaOpcao "Level 8",Translate 250 (-230) $ desenhaOpcao "Level 9",Translate 250 (-370) $ desenhaOpcao "Level 10"] ---------
-desenhaWorld (Mapa Level2 b m, jogo, imagens) = Pictures [Translate (-400) 200 $ desenhaOpcao "Level 1", Color blue $ Translate (-400) 50 $ desenhaOpcao ">Level 2", Translate (-400) (-90) $ desenhaOpcao "Level 3",Translate (-400) (-230) $ desenhaOpcao "Level 4",Translate (-400) (-370) $ desenhaOpcao "Level 5",Translate (-400) (-510) $ desenhaOpcao "Menu",Translate (250) 200 $ desenhaOpcao "Level 6", Translate 250 50 $ desenhaOpcao "Level 7", Translate 250 (-90) $ desenhaOpcao "Level 8",Translate 250 (-230) $ desenhaOpcao "Level 9",Translate 250 (-370) $ desenhaOpcao "Level 10"] ----------
-desenhaWorld (Mapa Level3 b m, jogo, imagens) = Pictures [Translate (-400) 200 $ desenhaOpcao "Level 1", Translate (-400) 50 $ desenhaOpcao "Level 2", Color blue $ Translate (-400) (-90) $ desenhaOpcao ">Level 3",Translate (-400) (-230) $ desenhaOpcao "Level 4",Translate (-400) (-370) $ desenhaOpcao "Level 5",Translate (-400) (-510) $ desenhaOpcao "Menu",Translate (250) 200 $ desenhaOpcao "Level 6", Translate 250 50 $ desenhaOpcao "Level 7", Translate 250 (-90) $ desenhaOpcao "Level 8",Translate 250 (-230) $ desenhaOpcao "Level 9",Translate 250 (-370) $ desenhaOpcao "Level 10"] -----------
-desenhaWorld (Mapa Level4 b m, jogo, imagens) = Pictures [Translate (-400) 200 $ desenhaOpcao "Level 1", Translate (-400) 50 $ desenhaOpcao "Level 2", Translate (-400) (-90) $ desenhaOpcao "Level 3",Color blue $ Translate (-400) (-230) $ desenhaOpcao ">Level 4",Translate (-400) (-370) $ desenhaOpcao "Level 5",Translate (-400) (-510) $ desenhaOpcao "Menu",Translate (250) 200 $ desenhaOpcao "Level 6", Translate 250 50 $ desenhaOpcao "Level 7", Translate 250 (-90) $ desenhaOpcao "Level 8",Translate 250 (-230) $ desenhaOpcao "Level 9",Translate 250 (-370) $ desenhaOpcao "Level 10"] -----------
-desenhaWorld (Mapa Level5 b m, jogo, imagens) = Pictures [Translate (-400) 200 $ desenhaOpcao "Level 1", Translate (-400) 50 $ desenhaOpcao "Level 2", Translate (-400) (-90) $ desenhaOpcao "Level 3",Translate (-400) (-230) $ desenhaOpcao "Level 4",Color blue $ Translate (-400) (-370) $ desenhaOpcao ">Level 5",Translate (-400) (-510) $ desenhaOpcao "Menu",Translate (250) 200 $ desenhaOpcao "Level 6", Translate 250 50 $ desenhaOpcao "Level 7", Translate 250 (-90) $ desenhaOpcao "Level 8",Translate 250 (-230) $ desenhaOpcao "Level 9",Translate 250 (-370) $ desenhaOpcao "Level 10"] -------------
-desenhaWorld (Mapa Level6 b m, jogo, imagens) = Pictures [Translate (-400) 200 $ desenhaOpcao "Level 1", Translate (-400) 50 $ desenhaOpcao "Level 2", Translate (-400) (-90) $ desenhaOpcao "Level 3",Translate (-400) (-230) $ desenhaOpcao "Level 4", Translate (-400) (-370) $ desenhaOpcao "Level 5",Translate (-400) (-510) $ desenhaOpcao "Menu",Color blue $ Translate (250) 200 $ desenhaOpcao ">Level 6", Translate 250 50 $ desenhaOpcao "Level 7", Translate 250 (-90) $ desenhaOpcao "Level 8",Translate 250 (-230) $ desenhaOpcao "Level 9",Translate 250 (-370) $ desenhaOpcao "Level 10"]
-desenhaWorld (Mapa Level7 b m, jogo, imagens) = Pictures [Translate (-400) 200 $ desenhaOpcao "Level 1", Translate (-400) 50 $ desenhaOpcao "Level 2", Translate (-400) (-90) $ desenhaOpcao "Level 3",Translate (-400) (-230) $ desenhaOpcao "Level 4", Translate (-400) (-370) $ desenhaOpcao "Level 5",Translate (-400) (-510) $ desenhaOpcao "Menu",Translate (250) 200 $ desenhaOpcao "Level 6", Color blue $ Translate 250 50 $ desenhaOpcao ">Level 7", Translate 250 (-90) $ desenhaOpcao "Level 8",Translate 250 (-230) $ desenhaOpcao "Level 9",Translate 250 (-370) $ desenhaOpcao "Level 10"]
-desenhaWorld (Mapa Level8 b m, jogo, imagens) = Pictures [Translate (-400) 200 $ desenhaOpcao "Level 1", Translate (-400) 50 $ desenhaOpcao "Level 2", Translate (-400) (-90) $ desenhaOpcao "Level 3",Translate (-400) (-230) $ desenhaOpcao "Level 4", Translate (-400) (-370) $ desenhaOpcao "Level 5",Translate (-400) (-510) $ desenhaOpcao "Menu",Translate (250) 200 $ desenhaOpcao "Level 6", Translate 250 50 $ desenhaOpcao "Level 7", Color blue $ Translate 250 (-90) $ desenhaOpcao ">Level 8",Translate 250 (-230) $ desenhaOpcao "Level 9",Translate 250 (-370) $ desenhaOpcao "Level 10"]
-desenhaWorld (Mapa Level9 b m, jogo, imagens) = Pictures [Translate (-400) 200 $ desenhaOpcao "Level 1", Translate (-400) 50 $ desenhaOpcao "Level 2", Translate (-400) (-90) $ desenhaOpcao "Level 3",Translate (-400) (-230) $ desenhaOpcao "Level 4", Translate (-400) (-370) $ desenhaOpcao "Level 5",Translate (-400) (-510) $ desenhaOpcao "Menu",Translate (250) 200 $ desenhaOpcao "Level 6", Translate 250 50 $ desenhaOpcao "Level 7", Translate 250 (-90) $ desenhaOpcao "Level 8",Color blue $ Translate 250 (-230) $ desenhaOpcao ">Level 9",Translate 250 (-370) $ desenhaOpcao "Level 10"]
-desenhaWorld (Mapa Level10 b m, jogo, imagens) = Pictures [Translate (-400) 200 $ desenhaOpcao "Level 1", Translate (-400) 50 $ desenhaOpcao "Level 2", Translate (-400) (-90) $ desenhaOpcao "Level 3",Translate (-400) (-230) $ desenhaOpcao "Level 4", Translate (-400) (-370) $ desenhaOpcao "Level 5",Translate (250) 200 $ desenhaOpcao "Level 6", Translate 250 50 $ desenhaOpcao "Level 7", Translate 250 (-90) $ desenhaOpcao "Level 8",Translate 250 (-230) $ desenhaOpcao "Level 9",Translate 250 (-370) $ Color blue $desenhaOpcao ">Level 10<",Translate (-400) (-510) $ desenhaOpcao "Menu"]
-desenhaWorld (Mapa Menu2 b m, jogo, imagens) = Pictures [Translate (-400) 200 $ desenhaOpcao "Level 1", Translate (-400) 50 $ desenhaOpcao "Level 2", Translate (-400) (-90) $ desenhaOpcao "Level 3",Translate (-400) (-230) $ desenhaOpcao "Level 4", Translate (-400) (-370) $ desenhaOpcao "Level 5",Color blue $ Translate (-400) (-510) $ desenhaOpcao ">Menu<",Translate (250) 200 $ desenhaOpcao "Level 6", Translate 250 50 $ desenhaOpcao "Level 7", Translate 250 (-90) $ desenhaOpcao "Level 8",Translate 250 (-230) $ desenhaOpcao "Level 9",Translate 250 (-370) $ desenhaOpcao "Level 10"]
+drawWorld (Mapa Level1 b m, jogo, imagens) = Pictures [ Scale 2.2 2.2  (head(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail imagens))))))))))))))))))]
+drawWorld (Mapa Level2 b m, jogo, imagens) = Pictures [ Scale 2.2 2.2  (head(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail imagens)))))))))))))))))))] 
+drawWorld (Mapa Level3 b m, jogo, imagens) = Pictures [ Scale 2.2 2.2  (head(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail imagens))))))))))))))))))))] 
+drawWorld (Mapa Level4 b m, jogo, imagens) = Pictures [ Scale 2.2 2.2  (head(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail imagens)))))))))))))))))))))]
+drawWorld (Mapa Level5 b m, jogo, imagens) = Pictures [ Scale 2.2 2.2  (head(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail imagens))))))))))))))))))))))] 
+drawWorld (Mapa Level6 b m, jogo, imagens) = Pictures [ Scale 2.2 2.2  (head(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail imagens)))))))))))))))))))))))]
+drawWorld (Mapa Level7 b m, jogo, imagens) = Pictures [ Scale 2.2 2.2  (head(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail imagens))))))))))))))))))))))))]
+drawWorld (Mapa Level8 b m, jogo, imagens) = Pictures [ Scale 2.2 2.2  (head(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail imagens)))))))))))))))))))))))))]
+drawWorld (Mapa Level9 b m, jogo, imagens) = Pictures [ Scale 2.2 2.2  (head(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail imagens))))))))))))))))))))))))))]
+drawWorld (Mapa Level10 b m, jogo, imagens) = Pictures [ Scale 2.2 2.2 (head(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail imagens)))))))))))))))))))))))))))]
+drawWorld (Mapa Menu2 b m, jogo, imagens) = Pictures [ Scale 2.2 2.2   (head(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail imagens))))))))))))))))))))))))))))]
 -------desenha constrolador inicial -------------
-desenhaWorld (Controlador Jogar, jogo, imagens) = Pictures [Translate  0 0 $ Scale 2.2 2.2 (head(tail(tail(tail(tail(tail(tail imagens)))))))] ----------
-desenhaWorld (Controlador Mapas, jogo, imagens) = Pictures [Translate  0 0 $ Scale 2.2 2.2 (head(tail(tail(tail(tail(tail(tail(tail imagens))))))))]
-desenhaWorld (Controlador Controls, jogo, imagens) = Pictures [Translate  0 0 $ Scale 2.2 2.2 (head(tail(tail(tail(tail(tail(tail(tail(tail imagens)))))))))]---------
-desenhaWorld (Controlador Sair, jogo, imagens) = Pictures [Translate  0 0 $ Scale 2.2 2.2  (head(tail(tail(tail(tail(tail(tail(tail(tail(tail imagens))))))))))] -----------
+drawWorld (Controlador Jogar, jogo, imagens) = Pictures [ Scale 2.2 2.2 (head(tail(tail(tail(tail(tail(tail imagens)))))))] 
+drawWorld (Controlador Mapas, jogo, imagens) = Pictures [ Scale 2.2 2.2 (head(tail(tail(tail(tail(tail(tail(tail imagens))))))))]
+drawWorld (Controlador Controls, jogo, imagens) = Pictures [ Scale 2.2 2.2 (head(tail(tail(tail(tail(tail(tail(tail(tail imagens)))))))))]
+drawWorld (Controlador Sair, jogo, imagens) = Pictures [ Scale 2.2 2.2  (head(tail(tail(tail(tail(tail(tail(tail(tail(tail imagens))))))))))]
 -----------desenha os controlos
-desenhaWorld (Controls3 b m, jogo, imagens) = Pictures [] -------------------------
+drawWorld (Controls3 b m, jogo, imagens) = Pictures [Scale 2.2 2.2 (head(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail imagens)))))))))))))))))))))))))))))] -------------------------
 ------------- desenha menu jogando
-desenhaWorld (Jogando l, jogo, imagens) ----
-  | l == Level1 = Translate (90) (-250) $ Scale 1.4 1.4 (Pictures desenho) --
-  | l == Level2 = Translate (40) (-150) $ Scale 1.3 1.3 (Pictures desenho) ---
-  | l == Level3 = Translate (125) (-105) $ Scale 1.3 1.3 (Pictures desenho) --
-  | l == Level4 = Translate (0) (15) $ Scale 1.1 1.1 (Pictures desenho) ---
-  | l == Level5 = Translate (0) (15) $ Scale 1.1 1.1 (Pictures desenho) --
-  | l == Level6 = Translate (35) (-20) $ Scale 1.2 1.2 (Pictures desenho) --
-  | l == Level7 = Translate (-70) (-15) $ Scale 1.1 1.1 (Pictures desenho) --
-  | l == Level8 = Translate (-145) (100) $ Scale 0.9 0.9  (Pictures desenho) --
-  | l == Level9 = Translate (-140) (140) $ Scale 0.8 0.8 (Pictures desenho) ----
-  | l == Level10 = Translate (-180) (140) $ Scale 0.8 0.8 (Pictures desenho) ----
-  | otherwise = Pictures desenho
+drawWorld (Jogando l, jogo, imagens) 
+  | l == Level1 = Translate 90 (-250) $ Scale 1.4 1.4 (Pictures drawing)
+  | l == Level2 = Translate 40 (-150) $ Scale 1.3 1.3 (Pictures drawing)
+  | l == Level3 = Translate 125 (-105) $ Scale 1.3 1.3 (Pictures drawing)
+  | l == Level4 = Translate 0 15 $ Scale 1.1 1.1 (Pictures drawing)
+  | l == Level5 = Translate 0 15 $ Scale 1.1 1.1 (Pictures drawing)
+  | l == Level6 = Translate 35 (-20) $ Scale 1.2 1.2 (Pictures drawing)
+  | l == Level7 = Translate (-70) (-15) $ Scale 1.1 1.1 (Pictures drawing)
+  | l == Level8 = Translate (-145) 100 $ Scale 0.9 0.9  (Pictures drawing)
+  | l == Level9 = Translate (-140) 140 $ Scale 0.8 0.8 (Pictures drawing)
+  | l == Level10 = Translate (-180) 140 $ Scale 0.8 0.8 (Pictures drawing)
   where
-      desenho = desenhoMapa ++ [desenhoJogador]
-      desenhoMapa
-        = (desenhaMapa
-             comprimento altura (getMapa (Jogando l, jogo, imagens)) imagens)
-      desenhoJogador
-        = desenhaJogador (getJogador (Jogando l, jogo, imagens)) imagens
+      drawing = drawingMap ++ [drawingPlayer]
+      drawingMap
+        = drawMap
+             c a (getMapa (Jogando l, jogo, imagens)) imagens
+      drawingPlayer
+        = drawPlayer (getJogador (Jogando l, jogo, imagens)) imagens
 
-desenhaLinha :: Float -> Float -> [Peca] -> Imagens -> [Picture]
-desenhaLinha x y (h:t) imagens = peca : resto
-  where peca = desenhaPeca x y h imagens
-        resto = desenhaLinha (x+l) y t imagens
-desenhaLinha _ _ _ _ = []
+drawLine :: Float -> Float -> [Peca] -> Imagens -> [Picture]
+drawLine x y (h:t) imagens = peca : resto
+  where peca = drawPiece x y h imagens
+        resto = drawLine (x+l) y t imagens
+drawLine _ _ _ _ = []
 
-desenhaPeca :: Float -> Float -> Peca -> Imagens -> Picture
-desenhaPeca x y peca imagens = Translate x y imagem
+drawPiece :: Float -> Float -> Peca -> Imagens -> Picture
+drawPiece x y peca imagens = Translate x y imagem
   where imagem = whatImg peca imagens
 
 whatImg :: Peca  -> Imagens -> Picture
 whatImg x l
- |x == Vazio = (head (tail (tail (tail (tail (tail l))))))
- |x == Bloco  = (head (tail (tail (tail (tail l)))))
- |x == Porta  = (head l)
- |x == Caixa = (head (tail (tail (tail l))))
+ |x == Vazio = head (tail (tail (tail (tail (tail l)))))
+ |x == Bloco  = head (tail (tail (tail (tail l))))
+ |x == Porta  = head l
+ |x == Caixa = head (tail (tail (tail l)))
  |otherwise = undefined
 
 
-desenhaMapa :: Float -> Float -> Mapa  -> Imagens -> [Picture]
-desenhaMapa x y (h:t) imagens = linha ++ resto
-   where linha = desenhaLinha x y h imagens
-         resto = desenhaMapa x (y-l) t imagens
-desenhaMapa _ _ _ _ = []
+drawMap :: Float -> Float -> Mapa  -> Imagens -> [Picture]
+drawMap x y (h:t) imagens = linha ++ resto
+   where linha = drawLine x y h imagens
+         resto = drawMap x (y-l) t imagens
+drawMap _ _ _ _ = []
 
-desenhaJogador :: Jogador -> Imagens -> Picture
-desenhaJogador (Jogador (x,y) d b) imagens
- |d == Oeste = Translate ((realPlayerX x)-64) (realPlayerY y) ((head (tail (tail imagens))))
- |otherwise = Translate  ((realPlayerX x)-64) (realPlayerY y) ((head (tail imagens)))
+drawPlayer :: Jogador -> Imagens -> Picture
+drawPlayer (Jogador (x,y) d b) imagens
+ |d == Oeste = Translate (realPlayerX x-64) (realPlayerY y) (head (tail (tail imagens)))
+ |otherwise = Translate  (realPlayerX x-64) (realPlayerY y) (head (tail imagens))
 
 realPlayerX :: Int -> Float
-realPlayerX = (+ comprimento).(* l).realToFrac.succ
+realPlayerX = (+ c).(* l).realToFrac.succ
 
 realPlayerY :: Int -> Float
-realPlayerY = (+ altura).(* (-l)).realToFrac
+realPlayerY = (+ a).(* (-l)).realToFrac
 
-altura :: Float
-altura = 400
+a :: Float
+a = 400
 
-comprimento :: Float
-comprimento = (-670.0)
+c :: Float
+c = -670.0
 
 getMapa :: World -> Mapa
 getMapa (_,Jogo m j,_) =  m
@@ -221,54 +188,50 @@ getMapa (_,Jogo m j,_) =  m
 getJogador :: World -> Jogador
 getJogador (_,Jogo m j,_) = j
 
--- desenha uma certa string no ecra
-desenhaOpcao :: String -> Picture
-desenhaOpcao option = Color white $ Translate (-160) 100 $ Text option ----------
-
 -- atribui funções as teclas
 event :: Event -> World -> World
 -----controlador2
-event (EventKey (SpecialKey KeyEnter) Down _ _) (Controlador2 Continuar1 l, jogo, imagens) = (Jogando l, jogo, imagens) 
-event (EventKey (SpecialKey KeyEnter) Down _ _) (Controlador2 Novo l, jogo, imagens) = (Jogando Level1, Jogo level1 player1 , imagens) 
-event (EventKey (SpecialKey KeyEnter) Down _ _) (Controlador2 Mapas1 l, jogo, imagens) = (Mapa Level1 True l, jogo, imagens) 
-event (EventKey (SpecialKey KeyEnter) Down _ _) (Controlador2 Sair2 l, jogo, imagens) = (Controls3 True l, jogo, imagens) 
-event (EventKey (SpecialKey KeyEnter) Down _ _) (Controlador2 Controls2 l, jogo, imagens) = undefined ---------------------------
-event (EventKey (SpecialKey KeyUp) Down _ _) (Controlador2 Continuar1 l, jogo, imagens) = (Controlador2 Sair2 l, jogo, imagens) 
-event (EventKey (SpecialKey KeyUp) Down _ _) (Controlador2 Sair2 l, jogo, imagens) = (Controlador2 Controls2 l, jogo, imagens) 
-event (EventKey (SpecialKey KeyUp) Down _ _) (Controlador2 Mapas1 l, jogo, imagens) = (Controlador2 Novo l, jogo, imagens) 
-event (EventKey (SpecialKey KeyUp) Down _ _) (Controlador2 Novo l, jogo, imagens) = (Controlador2 Continuar1 l, jogo, imagens) 
+event (EventKey (SpecialKey KeyEnter) Down _ _) (Controlador2 Continuar1 l, jogo, imagens) = (Jogando l, jogo, imagens)
+event (EventKey (SpecialKey KeyEnter) Down _ _) (Controlador2 Novo l, jogo, imagens) = (Jogando Level1, Jogo level1 player1 , imagens)
+event (EventKey (SpecialKey KeyEnter) Down _ _) (Controlador2 Mapas1 l, jogo, imagens) = (Mapa Level1 True l, jogo, imagens)
+event (EventKey (SpecialKey KeyEnter) Down _ _) (Controlador2 Sair2 l, jogo, imagens) = undefined
+event (EventKey (SpecialKey KeyEnter) Down _ _) (Controlador2 Controls2 l, jogo, imagens) = (Controls3 True l, jogo, imagens)
+event (EventKey (SpecialKey KeyUp) Down _ _) (Controlador2 Continuar1 l, jogo, imagens) = (Controlador2 Sair2 l, jogo, imagens)
+event (EventKey (SpecialKey KeyUp) Down _ _) (Controlador2 Sair2 l, jogo, imagens) = (Controlador2 Controls2 l, jogo, imagens)
+event (EventKey (SpecialKey KeyUp) Down _ _) (Controlador2 Mapas1 l, jogo, imagens) = (Controlador2 Novo l, jogo, imagens)
+event (EventKey (SpecialKey KeyUp) Down _ _) (Controlador2 Novo l, jogo, imagens) = (Controlador2 Continuar1 l, jogo, imagens)
 event (EventKey (SpecialKey KeyUp) Down _ _) (Controlador2 Controls2 l, jogo, imagens) = (Controlador2 Mapas1 l, jogo, imagens)
 event (EventKey (SpecialKey KeyDown) Down _ _) (Controlador2 Controls2 l, jogo, imagens) = (Controlador2 Sair2 l, jogo, imagens)
-event (EventKey (SpecialKey KeyDown ) Down _ _) (Controlador2 Continuar1 l, jogo, imagens) = (Controlador2 Novo l, jogo, imagens) 
-event (EventKey (SpecialKey KeyDown) Down _ _) (Controlador2 Novo l, jogo, imagens) = (Controlador2 Mapas1 l, jogo, imagens) 
+event (EventKey (SpecialKey KeyDown ) Down _ _) (Controlador2 Continuar1 l, jogo, imagens) = (Controlador2 Novo l, jogo, imagens)
+event (EventKey (SpecialKey KeyDown) Down _ _) (Controlador2 Novo l, jogo, imagens) = (Controlador2 Mapas1 l, jogo, imagens)
 event (EventKey (SpecialKey KeyDown) Down _ _) (Controlador2 Mapas1 l, jogo, imagens) = (Controlador2 Controls2 l, jogo, imagens)
-event (EventKey (SpecialKey KeyDown) Down _ _) (Controlador2 Sair2 l, jogo, imagens) = (Controlador2 Continuar1 l, jogo, imagens) 
+event (EventKey (SpecialKey KeyDown) Down _ _) (Controlador2 Sair2 l, jogo, imagens) = (Controlador2 Continuar1 l, jogo, imagens)
 -------------pausa
 event (EventKey (SpecialKey KeyEnter) Down _ _) (Pausa Menu3 l, jogo , imagens) = (Controlador2 Continuar1 l, jogo, imagens)
-event (EventKey (SpecialKey KeyEnter) Down _ _) (Pausa Continuar l, jogo, imagens) = (Jogando l, jogo, imagens) 
-event (EventKey (SpecialKey KeyUp) Down _ _) (Pausa Menu3 l, jogo , imagens) = (Pausa Continuar l, jogo, imagens) 
-event (EventKey (SpecialKey KeyDown ) Down _ _) (Pausa Continuar l, jogo, imagens) = (Pausa Menu3 l, jogo , imagens) 
+event (EventKey (SpecialKey KeyEnter) Down _ _) (Pausa Continuar l, jogo, imagens) = (Jogando l, jogo, imagens)
+event (EventKey (SpecialKey KeyUp) Down _ _) (Pausa Menu3 l, jogo , imagens) = (Pausa Continuar l, jogo, imagens)
+event (EventKey (SpecialKey KeyDown ) Down _ _) (Pausa Continuar l, jogo, imagens) = (Pausa Menu3 l, jogo , imagens)
 ------------contrrolador inicial
 event (EventKey (SpecialKey KeyEnter) Down _ _) (Controlador Jogar, Jogo l p, imagens) = (Jogando Level1 , Jogo level1 player1 , imagens)
-event (EventKey (SpecialKey KeyUp) Down _ _) (Controlador Jogar, jogo, imagens) = (Controlador Sair, jogo, imagens) 
-event (EventKey (SpecialKey KeyDown) Down _ _) (Controlador Jogar, jogo, imagens) = (Controlador Mapas, jogo, imagens) 
-event (EventKey (SpecialKey KeyDown) Down _ _) (Controlador Mapas, jogo, imagens) = (Controlador Controls, jogo, imagens) 
+event (EventKey (SpecialKey KeyUp) Down _ _) (Controlador Jogar, jogo, imagens) = (Controlador Sair, jogo, imagens)
+event (EventKey (SpecialKey KeyDown) Down _ _) (Controlador Jogar, jogo, imagens) = (Controlador Mapas, jogo, imagens)
+event (EventKey (SpecialKey KeyDown) Down _ _) (Controlador Mapas, jogo, imagens) = (Controlador Controls, jogo, imagens)
 event (EventKey (SpecialKey KeyDown) Down _ _) (Controlador Controls, jogo, imagens) = (Controlador Sair, jogo, imagens)
-event (EventKey (SpecialKey KeyEnter ) Down _ _) (Controlador Controls, jogo, imagens) = (Controls3 False Level1, jogo, imagens) 
-event (EventKey (SpecialKey KeyEnter ) Down _ _) (Controlador Mapas, jogo, imagens) = (Mapa Level1 False Level1, jogo, imagens) ---------------
-event (EventKey (SpecialKey KeyUp) Down _ _) (Controlador Mapas, jogo, imagens) = (Controlador Jogar, jogo, imagens) ----------
+event (EventKey (SpecialKey KeyEnter ) Down _ _) (Controlador Controls, jogo, imagens) = (Controls3 False Level1, jogo, imagens)
+event (EventKey (SpecialKey KeyEnter ) Down _ _) (Controlador Mapas, jogo, imagens) = (Mapa Level1 False Level1, jogo, imagens)
+event (EventKey (SpecialKey KeyUp) Down _ _) (Controlador Mapas, jogo, imagens) = (Controlador Jogar, jogo, imagens)
 event (EventKey (SpecialKey KeyUp) Down _ _) (Controlador Controls, jogo, imagens) = (Controlador Mapas, jogo, imagens)
-event (EventKey (SpecialKey KeyUp) Down _ _) (Controlador Sair, jogo, imagens) = (Controlador Controls, jogo, imagens)  -------------
+event (EventKey (SpecialKey KeyUp) Down _ _) (Controlador Sair, jogo, imagens) = (Controlador Controls, jogo, imagens) 
 event (EventKey (SpecialKey KeyDown) Down _ _) (Controlador Sair, jogo, imagens) = (Controlador Jogar, jogo, imagens)
-event (EventKey (SpecialKey KeyEnter) Down _ _) (Controlador Sair, jogo, imagens) = undefined  ----------
+event (EventKey (SpecialKey KeyEnter) Down _ _) (Controlador Sair, jogo, imagens) = undefined  
 ------------- venceu jogo
-event (EventKey (SpecialKey KeyEnter) Down _ _) (VenceuJogo Next l, jogo, imagens) = (Jogando (nextMundo l), Jogo (nextMap l) (nextPlayer l), imagens) ---
-event (EventKey (SpecialKey KeyEnter) Down _ _) (VenceuJogo Menu Level5, jogo, imagens) = (Controlador Jogar, jogo, imagens) ------------
-event (EventKey (SpecialKey KeyEnter) Down _ _) (VenceuJogo Menu l, jogo, imagens) = (Controlador Jogar, jogo, imagens)----------
-event (EventKey (SpecialKey KeyUp) Down _ _) (VenceuJogo Next l, jogo, imagens) = (VenceuJogo Menu l, jogo, imagens)----------
-event (EventKey (SpecialKey KeyDown) Down _ _) (VenceuJogo Menu l, jogo, imagens) = (VenceuJogo Next l, jogo, imagens)----------
-event (EventKey (SpecialKey KeyUp) Down _ _) (VenceuJogo Menu l, jogo, imagens) = (VenceuJogo Next l, jogo, imagens)----------
-event (EventKey (SpecialKey KeyDown) Down _ _) (VenceuJogo Next l, jogo, imagens) = (VenceuJogo Menu l, jogo, imagens)----------
+event (EventKey (SpecialKey KeyEnter) Down _ _) (VenceuJogo Next l, jogo, imagens) = (Jogando (nextMundo l), Jogo (nextMap l) (nextPlayer l), imagens) 
+event (EventKey (SpecialKey KeyEnter) Down _ _) (VenceuJogo Menu Level5, jogo, imagens) = (Controlador Jogar, jogo, imagens) 
+event (EventKey (SpecialKey KeyEnter) Down _ _) (VenceuJogo Menu l, jogo, imagens) = (Controlador Jogar, jogo, imagens)
+event (EventKey (SpecialKey KeyUp) Down _ _) (VenceuJogo Next l, jogo, imagens) = (VenceuJogo Menu l, jogo, imagens)
+event (EventKey (SpecialKey KeyDown) Down _ _) (VenceuJogo Menu l, jogo, imagens) = (VenceuJogo Next l, jogo, imagens)
+event (EventKey (SpecialKey KeyUp) Down _ _) (VenceuJogo Menu l, jogo, imagens) = (VenceuJogo Next l, jogo, imagens)
+event (EventKey (SpecialKey KeyDown) Down _ _) (VenceuJogo Next l, jogo, imagens) = (VenceuJogo Menu l, jogo, imagens)
 -----mapas
 event (EventKey (SpecialKey KeyDown ) Down _ _) (Mapa Level5 b m, jogo, imagens) = (Mapa Menu2 b m, jogo,  imagens)
 event (EventKey (SpecialKey KeyDown) Down _ _) (Mapa Level1 b m, jogo, imagens) = (Mapa Level2 b m, jogo,  imagens)
@@ -281,28 +244,28 @@ event (EventKey (SpecialKey KeyUp) Down _ _) (Mapa Level5 b m, jogo, imagens) = 
 event (EventKey (SpecialKey KeyUp) Down _ _) (Mapa Level4 b m, jogo, imagens) = (Mapa Level3 b m, jogo, imagens)
 event (EventKey (SpecialKey KeyUp) Down _ _) (Mapa Level3 b m, jogo, imagens) = (Mapa Level2 b m, jogo, imagens)
 event (EventKey (SpecialKey KeyUp) Down _ _) (Mapa Level2 b m, jogo, imagens) = (Mapa Level1 b m, jogo, imagens)
-event (EventKey (SpecialKey KeyUp ) Down _ _) (Mapa Menu2 b m, jogo, imagens) = (Mapa Level5 b m, jogo,  imagens) 
-event (EventKey (SpecialKey KeyDown ) Down _ _) (Mapa Level6 b m, jogo, imagens) = (Mapa Level7 b m, jogo,  imagens) 
+event (EventKey (SpecialKey KeyUp ) Down _ _) (Mapa Menu2 b m, jogo, imagens) = (Mapa Level5 b m, jogo,  imagens)
+event (EventKey (SpecialKey KeyDown ) Down _ _) (Mapa Level6 b m, jogo, imagens) = (Mapa Level7 b m, jogo,  imagens)
 event (EventKey (SpecialKey KeyDown) Down _ _) (Mapa Level7 b m, jogo, imagens) = (Mapa Level8 b m, jogo,  imagens)
 event (EventKey (SpecialKey KeyDown ) Down _ _) (Mapa Level8 b m, jogo, imagens) = (Mapa Level9 b m, jogo,  imagens)
 event (EventKey (SpecialKey KeyDown ) Down _ _) (Mapa Level9 b m, jogo, imagens) = (Mapa Level10 b m, jogo,  imagens)
-event (EventKey (SpecialKey KeyDown ) Down _ _) (Mapa Level10 b m, jogo, imagens) = (Mapa Level10 b m, jogo,  imagens)
+event (EventKey (SpecialKey KeyDown ) Down _ _) (Mapa Level10 b m, jogo, imagens) = (Mapa Menu2 b m, jogo,  imagens)
 event (EventKey (SpecialKey KeyUp ) Down _ _) (Mapa Level6 b m, jogo, imagens) = (Mapa Level6 b m, jogo, imagens)
 event (EventKey (SpecialKey KeyUp) Down _ _) (Mapa Level7 b m, jogo, imagens) = (Mapa Level6 b m, jogo, imagens)
 event (EventKey (SpecialKey KeyUp) Down _ _) (Mapa Level8 b m, jogo, imagens) = (Mapa Level7 b m, jogo, imagens)
 event (EventKey (SpecialKey KeyUp) Down _ _) (Mapa Level9 b m, jogo, imagens) = (Mapa Level8 b m, jogo, imagens)
 event (EventKey (SpecialKey KeyUp) Down _ _) (Mapa Level10 b m, jogo, imagens) = (Mapa Level9 b m, jogo, imagens)
-event (EventKey (SpecialKey KeyRight) Down _ _) (Mapa Level6 b m, jogo, imagens) = (Mapa Level6 b m, jogo,  imagens) 
+event (EventKey (SpecialKey KeyRight) Down _ _) (Mapa Level6 b m, jogo, imagens) = (Mapa Level6 b m, jogo,  imagens)
 event (EventKey (SpecialKey KeyRight) Down _ _) (Mapa Level7 b m, jogo, imagens) = (Mapa Level7 b m, jogo,  imagens)
 event (EventKey (SpecialKey KeyRight) Down _ _) (Mapa Level8 b m, jogo, imagens) = (Mapa Level8 b m, jogo,  imagens)
 event (EventKey (SpecialKey KeyRight) Down _ _) (Mapa Level9 b m, jogo, imagens) = (Mapa Level9 b m, jogo,  imagens)
-event (EventKey (SpecialKey KeyRight ) Down _ _) (Mapa Level10 b m, jogo, imagens) = (Mapa Level10 b m, jogo,  imagens)
+event (EventKey (SpecialKey KeyRight ) Down _ _) (Mapa Level10 b m, jogo, imagens) = (Mapa Level10 b m, jogo, imagens)
 event (EventKey (SpecialKey KeyRight) Down _ _) (Mapa Level1 b m, jogo, imagens) = (Mapa Level6 b m, jogo, imagens)
 event (EventKey (SpecialKey KeyRight) Down _ _) (Mapa Level2 b m, jogo, imagens) = (Mapa Level7 b m, jogo, imagens)
 event (EventKey (SpecialKey KeyRight) Down _ _) (Mapa Level3 b m, jogo, imagens) = (Mapa Level8 b m, jogo, imagens)
 event (EventKey (SpecialKey KeyRight) Down _ _) (Mapa Level4 b m, jogo, imagens) = (Mapa Level9 b m, jogo, imagens)
 event (EventKey (SpecialKey KeyRight) Down _ _) (Mapa Level5 b m, jogo, imagens) = (Mapa Level10 b m, jogo, imagens)
-event (EventKey (SpecialKey KeyLeft ) Down _ _) (Mapa Level6 b m, jogo, imagens) = (Mapa Level1 b m, jogo,  imagens) 
+event (EventKey (SpecialKey KeyLeft ) Down _ _) (Mapa Level6 b m, jogo, imagens) = (Mapa Level1 b m, jogo,  imagens)
 event (EventKey (SpecialKey KeyLeft) Down _ _) (Mapa Level7 b m, jogo, imagens) = (Mapa Level2 b m, jogo,  imagens)
 event (EventKey (SpecialKey KeyLeft) Down _ _) (Mapa Level8 b m, jogo, imagens) = (Mapa Level3 b m, jogo,  imagens)
 event (EventKey (SpecialKey KeyLeft) Down _ _) (Mapa Level9 b m, jogo, imagens) = (Mapa Level4 b m, jogo,  imagens)
@@ -313,29 +276,29 @@ event (EventKey (SpecialKey KeyLeft) Down _ _) (Mapa Level3 b m, jogo, imagens) 
 event (EventKey (SpecialKey KeyLeft) Down _ _) (Mapa Level4 b m, jogo, imagens) = (Mapa Level4 b m, jogo, imagens)
 event (EventKey (SpecialKey KeyLeft) Down _ _) (Mapa Level5 b m, jogo, imagens) = (Mapa Level5 b m, jogo, imagens)
 event (EventKey (SpecialKey KeyEnter) Down _ _) (Mapa Menu2 b m, jogo, imagens) = if b then (Controlador2 Continuar1 m, jogo, imagens) else (Controlador Jogar, jogo, imagens)
-event (EventKey (SpecialKey KeyEnter) Down _ _) (Mapa l b m, jogo, imagens) = (Jogando l, Jogo (whatMap l) (whatPlayer l), imagens) 
+event (EventKey (SpecialKey KeyEnter) Down _ _) (Mapa l b m, jogo, imagens) = (Jogando l, Jogo (whatMap l) (whatPlayer l), imagens)
 ---- menu jogando
-event (EventKey (SpecialKey KeySpace ) Down _ _) (Jogando l, jogo, imagens) = (Pausa Menu3 l, jogo , imagens)
+event (EventKey (SpecialKey KeySpace ) Down _ _) (Jogando l, jogo, imagens) = (Pausa Continuar l, jogo , imagens)
 event (EventKey (SpecialKey KeyUp) Down _ _) (Jogando l, jogo, imagens) = (Jogando l, moveJogador jogo Trepar, imagens)
-event (EventKey (SpecialKey KeyRight) Down _ _) (Jogando l, jogo, imagens) = (Jogando l, moveJogador jogo AndarDireita , imagens) 
-event (EventKey (SpecialKey KeyLeft) Down _ _) (Jogando l, jogo, imagens) = (Jogando l, moveJogador jogo AndarEsquerda , imagens) 
+event (EventKey (SpecialKey KeyRight) Down _ _) (Jogando l, jogo, imagens) = (Jogando l, moveJogador jogo AndarDireita , imagens)
+event (EventKey (SpecialKey KeyLeft) Down _ _) (Jogando l, jogo, imagens) = (Jogando l, moveJogador jogo AndarEsquerda , imagens)
 event (EventKey (SpecialKey KeyDown) Down _ _) (Jogando l, jogo, imagens) = (Jogando l, moveJogador jogo InterageCaixa , imagens)
 event (EventKey (SpecialKey KeyEnter) Down _ _) (Jogando l, jogo, imagens) = (Jogando l, Jogo (whatMap l) (whatPlayer l) , imagens)
 ----- menu constrolos
-event (EventKey (SpecialKey KeyEnter) Down _ _) (Controls3 b m, jogo, imagens) = if b then (Controlador2 Continuar1 m, jogo, imagens) else (Controlador Jogar, jogo, imagens)
+event (EventKey (SpecialKey KeyEnter) Down _ _) (Controls3 b l, jogo, imagens) = if b then (Controlador2 Continuar1 l, jogo, imagens) else (Controlador Jogar, jogo, imagens)
 -----venceu ultimo jogo
-event (EventKey (SpecialKey KeyEnter) Down _ _) (VenceuUltimoJogo Menu1, jogo, imagens) = (Controlador Jogar, jogo, imagens) 
-event (EventKey (SpecialKey KeyEnter) Down _ _) (VenceuUltimoJogo Sair1, jogo, imagens) = undefined 
-event (EventKey (SpecialKey KeyUp ) Down _ _) (VenceuUltimoJogo Sair1, jogo, imagens) = (VenceuUltimoJogo Menu1, jogo, imagens) 
-event (EventKey (SpecialKey KeyDown) Down _ _) (VenceuUltimoJogo Menu1, jogo, imagens) = (VenceuUltimoJogo Sair1, jogo, imagens) 
-event _ w = w -------------
+event (EventKey (SpecialKey KeyEnter) Down _ _) (VenceuUltimoJogo Menu1, jogo, imagens) = (Controlador Jogar, jogo, imagens)
+event (EventKey (SpecialKey KeyEnter) Down _ _) (VenceuUltimoJogo Sair1, jogo, imagens) = undefined
+event (EventKey (SpecialKey KeyUp ) Down _ _) (VenceuUltimoJogo Sair1, jogo, imagens) = (VenceuUltimoJogo Menu1, jogo, imagens)
+event (EventKey (SpecialKey KeyDown) Down _ _) (VenceuUltimoJogo Menu1, jogo, imagens) = (VenceuUltimoJogo Sair1, jogo, imagens)
+event _ w = w 
 
 ---------
 coordPorta :: (Int,Int) ->  Jogo -> Bool
 coordPorta (x1,y1) (Jogo ([]:ps) (Jogador (x2,y2) d b)) = coordPorta (0,y1+1) (Jogo ps (Jogador (x2,y2) d b))
 coordPorta (x1,y1) (Jogo ((h:t):ps) (Jogador (x2,y2) d b))
  |h == Porta && x1 == x2 && y1 == y2 = True
- |otherwise = coordPorta (x1+1,y2) (Jogo (t:ps) (Jogador (x2,y2) d b))
+ |otherwise = coordPorta (x1+1,y1) (Jogo (t:ps) (Jogador (x2,y2) d b))
 coordPorta (x1,y1) (Jogo [] (Jogador (x2,y2) d b)) = False
 --------
 whatMap :: Mapas -> Mapa
@@ -389,7 +352,7 @@ nextMap l
  |l == Level7 = level8
  |l == Level8 = level9
  |l == Level9 = level10
- |otherwise = undefined 
+ |otherwise = undefined
 ----------
 
 nextPlayer :: Mapas -> Jogador
@@ -401,30 +364,30 @@ nextPlayer l
  | l == Level5 = player6
  | l == Level6 = player7
  | l == Level7 = player8
- | l == Level8 = player9 
+ | l == Level8 = player9
  | l == Level9 = player10
- |otherwise = undefined 
+ |otherwise = undefined
 
 l :: Float
 l = 64.0
 
-updateMundo :: Float -> World -> World
-updateMundo _ (Jogando l, Jogo m (Jogador (x,y) d b) , imagens) = if coordPorta (0,0) (Jogo m (Jogador (x,y) d b)) ----------
-                                                                     then if l == Level10                    --------------
-                                                                          then (VenceuUltimoJogo Menu1, Jogo m (Jogador (x,y) d b), imagens) --------
-                                                                          else (VenceuJogo Next l, Jogo m (Jogador (x,y) d b), imagens) ----------
-                                                                     else (Jogando l, Jogo m (Jogador (x,y) d b), imagens) --------
-updateMundo _ w = w
+updateWorld :: Float -> World -> World
+updateWorld _ (Jogando l, Jogo m (Jogador (x,y) d b) , imagens) = if coordPorta (0,0) (Jogo m (Jogador (x,y) d b))
+                                                                     then if l == Level10                   
+                                                                          then (VenceuUltimoJogo Menu1, Jogo m (Jogador (x,y) d b), imagens) 
+                                                                          else (VenceuJogo Next l, Jogo m (Jogador (x,y) d b), imagens)
+                                                                     else (Jogando l, Jogo m (Jogador (x,y) d b), imagens) 
+updateWorld _ w = w
 
-cor :: Graphics.Gloss.Raster.Array.Color 
-cor = makeColorI 77 77 77 0
+cor :: Graphics.Gloss.Raster.Array.Color
+cor = makeColorI 0 25 51 0
 
-vazia :: Picture 
+vazia :: Picture
 vazia = Color cor $ Polygon [(0,0),(0,l),(l,0),(l,l)]
 
 main :: IO ()
 main = do
-         blockdude_direita <- loadBMP "img/right1.bmp"                                                                                            
+         blockdude_direita <- loadBMP "img/right1.bmp"
          blockdude_esquerda <- loadBMP "img/left1.bmp"
          porta <- loadBMP "img/porta.bmp"
          caixa <- loadBMP "img/caixa.bmp"
@@ -438,11 +401,29 @@ main = do
          maps2 <- loadBMP "img/maps2.bmp"
          controls2 <- loadBMP "img/controls2.bmp"
          exit2 <- loadBMP "img/exit2.bmp"
-         
-         let imagens = [porta,blockdude_direita,blockdude_esquerda,caixa,bloco,vazia,play1,maps,controls,exit,resume,newgame,maps2,controls2,exit2]
+         menu4 <- loadBMP "img/menu4.bmp" 
+         resume4 <- loadBMP "img/resume4.bmp" 
+         mlv <- loadBMP "img/menulvl.bmp"
+         lv9 <- loadBMP "img/level9.bmp"
+         lv10 <- loadBMP "img/lvel10.bmp"
+         lv8 <- loadBMP "img/level8.bmp"
+         lv7 <- loadBMP "img/level7.bmp"
+         lv6 <- loadBMP "img/level6.bmp"
+         lv5 <- loadBMP "img/level5.bmp"
+         lv3 <- loadBMP "img/level3.bmp" 
+         lv2 <- loadBMP "img/level2.bmp" 
+         lv1 <- loadBMP "img/level1.bmp" 
+         lv4 <- loadBMP "img/level4.bmp" 
+         con <- loadBMP "img/cntrpage.bmp" 
+         men <- loadBMP "img/menu3.bmp" 
+         nx <- loadBMP "img/next3.bmp" 
+         mn <- loadBMP "img/menu5.bmp" 
+         ex <- loadBMP "img/exit5.bmp" 
 
-         let estadoInicial = (Controlador Jogar, Jogo level1 player1, imagens)
-  
-         play window cor fr estadoInicial desenhaWorld event updateMundo 
+         let imagens = [porta,blockdude_direita,blockdude_esquerda,caixa,bloco,
+                        vazia,play1,maps,controls,exit,resume,newgame,maps2,controls2,exit2,menu4,resume4,
+                        lv1,lv2,lv3,lv4,lv5,lv6,lv7,lv8,lv9,lv10,mlv,con,men,nx,mn,ex]
 
------mudar o menu para imagens
+         let inicialState = (Controlador Jogar, Jogo level1 player1, imagens)
+
+         play window cor fr inicialState drawWorld event updateWorld

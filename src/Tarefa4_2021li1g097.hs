@@ -159,7 +159,7 @@ vazioEmbaixo :: (Int,Int)    -- ^Acumulador que nos permite manter a informaçã
                 -> Bool      -- ^Resultado
 vazioEmbaixo (x1,y1) (Jogo ([]:t) (Jogador (x2,y2) d b)) = vazioEmbaixo (0,y1+1) (Jogo t (Jogador (x2,y2) d b))
 vazioEmbaixo (x1,y1) (Jogo ((x:xs):t) (Jogador (x2,y2) d b))
- |x1 == x2 && y1 == y2+1 = x == Vazio
+ |x1 == x2 && y1 == y2+1 = x == Vazio || x == Porta
  |otherwise = vazioEmbaixo (x1+1,y1) (Jogo (xs:t) (Jogador (x2,y2) d b))
 
 {- | A função 'vazioEmcima' vai verificar se existe um vazio por cima do jogador.
