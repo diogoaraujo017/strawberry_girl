@@ -27,61 +27,61 @@ Esta função utiliza funções que se encontram posteriormente defenidas.
 moveJogador :: Jogo -> Movimento -> Jogo
 moveJogador (Jogo (p:ps) (Jogador (x,y) d b)) m
  |m == AndarEsquerda = if not b
-                       then if 'verificaLados' (0,0) (Jogo (p:ps) (Jogador (x,y) d b)) AndarEsquerda
-                            then if 'vazioEmbaixo' (0,0) (Jogo (p:ps) (Jogador (x-1,y) Oeste b))
-                                 then 'jogadorCai' (Jogo (p:ps) (Jogador (x-1,y) Oeste b))
+                       then if verificaLados (0,0) (Jogo (p:ps) (Jogador (x,y) d b)) AndarEsquerda
+                            then if vazioEmbaixo (0,0) (Jogo (p:ps) (Jogador (x-1,y) Oeste b))
+                                 then jogadorCai (Jogo (p:ps) (Jogador (x-1,y) Oeste b))
                                  else Jogo (p:ps) (Jogador (x-1,y) Oeste b)
                             else Jogo (p:ps) (Jogador (x,y) Oeste b)
-                       else if 'verificaLadosCaixa' (0,0) (Jogo (p:ps) (Jogador (x,y) d b)) AndarEsquerda
-                            then if 'vazioEmbaixo' (0,0) (Jogo (p:ps) (Jogador (x-1,y) Oeste b))
-                                 then 'colocaCaixaCima' (0,0) removeCaixa  ('jogadorCai' (Jogo (p:ps) (Jogador (x-1,y) Oeste b)))
-                                 else 'colocaCaixaCima' (0,0) removeCaixa  (Jogo (p:ps) (Jogador (x-1,y) Oeste b))
+                       else if verificaLadosCaixa (0,0) (Jogo (p:ps) (Jogador (x,y) d b)) AndarEsquerda
+                            then if vazioEmbaixo (0,0) (Jogo (p:ps) (Jogador (x-1,y) Oeste b))
+                                 then colocaCaixaCima (0,0) removeCaixa  (jogadorCai (Jogo (p:ps) (Jogador (x-1,y) Oeste b)))
+                                 else colocaCaixaCima (0,0) removeCaixa  (Jogo (p:ps) (Jogador (x-1,y) Oeste b))
                             else Jogo (p:ps) (Jogador (x,y) Oeste b)
 
  |m == AndarDireita = if not b
-                      then if 'verificaLados' (0,0) (Jogo (p:ps) (Jogador (x,y) d b)) AndarDireita
-                           then if 'vazioEmbaixo' (0,0) (Jogo (p:ps) (Jogador (x+1,y) Este b))
-                                then 'jogadorCai' (Jogo (p:ps) (Jogador (x+1,y) Este b))
+                      then if verificaLados (0,0) (Jogo (p:ps) (Jogador (x,y) d b)) AndarDireita
+                           then if vazioEmbaixo (0,0) (Jogo (p:ps) (Jogador (x+1,y) Este b))
+                                then jogadorCai (Jogo (p:ps) (Jogador (x+1,y) Este b))
                                 else Jogo (p:ps) (Jogador (x+1,y) Este b)
                            else Jogo (p:ps) (Jogador (x,y) Este b)
-                      else if 'verificaLadosCaixa' (0,0) (Jogo (p:ps) (Jogador (x,y) d b)) AndarDireita
-                           then if 'vazioEmbaixo' (0,0) (Jogo (p:ps) (Jogador (x+1,y) Este b))
-                                then 'colocaCaixaCima' (0,0) removeCaixa  ('jogadorCai' (Jogo (p:ps) (Jogador (x+1,y) Este b)))
-                                else 'colocaCaixaCima' (0,0) removeCaixa  (Jogo (p:ps) (Jogador (x+1,y) Este b))
+                      else if verificaLadosCaixa (0,0) (Jogo (p:ps) (Jogador (x,y) d b)) AndarDireita
+                           then if vazioEmbaixo (0,0) (Jogo (p:ps) (Jogador (x+1,y) Este b))
+                                then colocaCaixaCima (0,0) removeCaixa  (jogadorCai (Jogo (p:ps) (Jogador (x+1,y) Este b)))
+                                else colocaCaixaCima (0,0) removeCaixa  (Jogo (p:ps) (Jogador (x+1,y) Este b))
                            else Jogo (p:ps) (Jogador (x,y) Este b)
 
  |m == Trepar = if not b
-                then if 'podeTrepar' (0,0) (Jogo (p:ps) (Jogador (x,y) d b))
+                then if podeTrepar (0,0) (Jogo (p:ps) (Jogador (x,y) d b))
                      then if d == Oeste
                           then Jogo (p:ps) (Jogador (x-1,y-1) Oeste b)
                           else Jogo (p:ps) (Jogador (x+1,y-1) Este b)
                      else Jogo (p:ps) (Jogador (x,y) d b)
-                else if 'podeTreparCaixa' (0,0) (Jogo (p:ps) (Jogador (x,y) d b))
+                else if podeTreparCaixa (0,0) (Jogo (p:ps) (Jogador (x,y) d b))
                      then if d == Oeste
-                          then 'colocaCaixaCima' (0,0) removeCaixa  (Jogo (p:ps) (Jogador (x-1,y-1) Oeste b))
-                          else 'colocaCaixaCima' (0,0) removeCaixa  (Jogo (p:ps) (Jogador (x+1,y-1) Este b))
+                          then colocaCaixaCima (0,0) removeCaixa  (Jogo (p:ps) (Jogador (x-1,y-1) Oeste b))
+                          else colocaCaixaCima (0,0) removeCaixa  (Jogo (p:ps) (Jogador (x+1,y-1) Este b))
                      else Jogo (p:ps) (Jogador (x,y) d b)
 
  |m == InterageCaixa = if not b
-                       then if 'podePegar' (0,0) (Jogo (p:ps) (Jogador (x,y) d b))     
+                       then if podePegar (0,0) (Jogo (p:ps) (Jogador (x,y) d b))     
                             then if d == Oeste     
-                                 then 'colocaCaixaCima' (0,0) ('removeCertaPeca' (Caixa,(x-1,y)) ('desconstroiMapa' (p:ps))) (Jogo (p:ps) (Jogador (x,y) Oeste b))
-                                 else 'colocaCaixaCima' (0,0) ('removeCertaPeca' (Caixa,(x+1,y)) ('desconstroiMapa' (p:ps))) (Jogo (p:ps) (Jogador (x,y) Este b))              
+                                 then colocaCaixaCima (0,0) (removeCertaPeca (Caixa,(x-1,y)) (desconstroiMapa (p:ps))) (Jogo (p:ps) (Jogador (x,y) Oeste b))
+                                 else colocaCaixaCima (0,0) (removeCertaPeca (Caixa,(x+1,y)) (desconstroiMapa (p:ps))) (Jogo (p:ps) (Jogador (x,y) Este b))              
                             else Jogo (p:ps) (Jogador (x,y) d b)   
-                       else if 'podeLargar' (0,0) (Jogo (p:ps) (Jogador (x,y) d b)) 
-                            then if 'vaiAtirar' (0,0) (Jogo (p:ps) (Jogador (x,y) d b))
+                       else if podeLargar (0,0) (Jogo (p:ps) (Jogador (x,y) d b)) 
+                            then if vaiAtirar (0,0) (Jogo (p:ps) (Jogador (x,y) d b))
                                  then if d == Oeste
-                                      then Jogo ('constroiMapa' ('removeCaixa'  ++ [(Caixa,(x-1,'pecaCoordenada' y ('certaColuna' (x-1) (0,0) (p:ps))))]))  (Jogador (x,y) Oeste b) 
-                                      else Jogo ('constroiMapa' ('removeCaixa'  ++ [(Caixa,(x+1,'pecaCoordenada' y ('certaColuna' (x+1) (0,0) (p:ps))))]))  (Jogador (x,y) Este b)
+                                      then Jogo (constroiMapa (removeCaixa  ++ [(Caixa,(x-1,pecaCoordenada y (certaColuna (x-1) (0,0) (p:ps))))]))  (Jogador (x,y) Oeste False) 
+                                      else Jogo (constroiMapa (removeCaixa  ++ [(Caixa,(x+1,pecaCoordenada y (certaColuna (x+1) (0,0) (p:ps))))]))  (Jogador (x,y) Este False )
                                  else if vazioFrente (0,0) (Jogo (p:ps) (Jogador (x,y) d b))     
                                       then if d == Oeste 
-                                           then Jogo ('constroiMapa' ('removeCaixa'  ++ [(Caixa,(x-1,y))]))  (Jogador (x,y) Oeste b)
-                                           else Jogo ('constroiMapa' ('removeCaixa'  ++ [(Caixa,(x+1,y))]))  (Jogador (x,y) Este b) 
+                                           then Jogo (constroiMapa (removeCaixa  ++ [(Caixa,(x-1,y))]))  (Jogador (x,y) Oeste False)
+                                           else Jogo (constroiMapa (removeCaixa  ++ [(Caixa,(x+1,y))]))  (Jogador (x,y) Este False) 
                                       else if d == Oeste 
-                                           then Jogo ('constroiMapa' ('removeCaixa'  ++ [(Caixa,(x-1,y-1))])) (Jogador (x,y) Oeste b)      
-                                           else Jogo ('constroiMapa' ('removeCaixa'  ++ [(Caixa,(x+1,y-1))])) (Jogador (x,y) Este b) 
-                            else Jogo (p:ps) (Jogador (x,y) d b) 
- where removeCaixa = 'removeCertaPeca' (Caixa,(x,y-1)) ('desconstroiMapa' (p:ps))
+                                           then Jogo (constroiMapa (removeCaixa  ++ [(Caixa,(x-1,y-1))])) (Jogador (x,y) Oeste False)      
+                                           else Jogo (constroiMapa (removeCaixa  ++ [(Caixa,(x+1,y-1))])) (Jogador (x,y) Este False) 
+                            else Jogo (p:ps) (Jogador (x,y) d True) 
+ where removeCaixa = removeCertaPeca (Caixa,(x,y-1)) (desconstroiMapa (p:ps))
 @
 -}
 moveJogador :: Jogo -> Movimento -> Jogo
@@ -150,7 +150,7 @@ moveJogador (Jogo (p:ps) (Jogador (x,y) d b)) m
 vazioEmbaixo :: (Int,Int) -> Jogo -> Bool
 vazioEmbaixo (x1,y1) (Jogo ([]:t) (Jogador (x2,y2) d b)) = vazioEmbaixo (0,y1+1) (Jogo t (Jogador (x2,y2) d b))
 vazioEmbaixo (x1,y1) (Jogo ((x:xs):t) (Jogador (x2,y2) d b))
- |x1 == x2 && y1 == y2+1 = x == Vazio
+ |x1 == x2 && y1 == y2+1 = x == Vazio || x == Porta
  |otherwise = vazioEmbaixo (x1+1,y1) (Jogo (xs:t) (Jogador (x2,y2) d b))
 @
 -}
@@ -264,14 +264,14 @@ podeTrepar :: (Int,Int) -> Jogo -> Bool
 podeTrepar _ (Jogo [] Jogador {}) = False
 podeTrepar (x1,y1) (Jogo ([]:t) (Jogador (x2,y2) d b))  = podeTrepar (0,y1+1) (Jogo t (Jogador (x2,y2) d b))
 podeTrepar (x1,y1) (Jogo ((x:xs):t) (Jogador (x2,y2) Oeste b))
- |x1 == x2-1 && y1 == y2-1 = x == Vazio && a
+ |x1 == x2-1 && y1 == y2-1 = (x == Vazio || x == Porta) && a
  |x1 == x2 && y1 == y2-1 = x == Vazio && a
  |x1 == x2-1 && y1 == y2 = x == Bloco || x == Caixa
  |otherwise = a
  where a = podeTrepar (x1+1,y1) (Jogo (xs:t) (Jogador (x2,y2) Oeste b))
 podeTrepar (x1,y1) (Jogo ((x:xs):t) (Jogador (x2,y2) Este b))
  |x1 == x2 && y1 == y2-1 = x == Vazio && b
- |x1 == x2+1 && y1 == y2-1 = x == Vazio && b
+ |x1 == x2+1 && y1 == y2-1 = (x == Vazio || x == Porta) && b
  |x1 == x2+1 && y1 == y2 = x == Caixa || x == Bloco
  |otherwise = b
  where b = podeTrepar (x1+1,y1) (Jogo (xs:t) (Jogador (x2,y2) Este b))
@@ -311,14 +311,14 @@ podeTreparCaixa (_,y1) (Jogo ([]:t) (Jogador (x2,y2) d b)) = podeTreparCaixa (0,
 podeTreparCaixa (x1,y1) (Jogo ((x:xs):t) (Jogador (x2,y2) Oeste b))
  |x1 == x2-1 && y1 == y2-2 = x == Vazio && a
  |x1 == x2 && y1 == y2-2 = x == Vazio && a
- |x1 == x2-1 && y1 == y2-1 = x == Vazio && a
+ |x1 == x2-1 && y1 == y2-1 = (x == Vazio || x == Porta) && a
  |x1 == x2-1 && y1 == y2 = x == Bloco || x == Caixa
  |otherwise = a
  where a = podeTreparCaixa (x1+1,y1) (Jogo (xs:t) (Jogador (x2,y2) Oeste b))
 podeTreparCaixa (x1,y1) (Jogo ((x:xs):t) (Jogador (x2,y2) Este b))
  |x1 == x2 && y1 == y2-2 = x == Vazio && b
  |x1 == x2+1 && y1 == y2-2 = x == Vazio && b
- |x1 == x2+1 && y1 == y2-1 = x == Vazio && b
+ |x1 == x2+1 && y1 == y2-1 = (x == Vazio || x == Porta) && b
  |x1 == x2+1 && y1 == y2 = x == Bloco || x == Caixa
  |otherwise = b
  where b = podeTreparCaixa (x1+1,y1) (Jogo (xs:t) (Jogador (x2,y2) Este b))
@@ -467,7 +467,7 @@ vazioFrente (x1,y1) (Jogo ((x:xs):t) (Jogador (x2,y2) Oeste b))
  |otherwise = vazioFrente (x1+1,y1) (Jogo (xs:t) (Jogador (x2,y2) Oeste b))
 vazioFrente (x1,y1) (Jogo ((x:xs):t) (Jogador (x2,y2) Este b))
  |x1 == x2+1 && y1 == y2 = x == Vazio
- |otherwise = vazioFrente (x1+1,y1) (Jogo (xs:t) (Jogador (x2,y2) Oeste b))
+ |otherwise = vazioFrente (x1+1,y1) (Jogo (xs:t) (Jogador (x2,y2) Este b))
 @
 -}
 vazioFrente :: (Int,Int) -> Jogo -> Bool
@@ -489,9 +489,11 @@ vaiAtirar :: (Int,Int) -> Jogo -> Bool
 vaiAtirar _ (Jogo [] Jogador {}) = False
 vaiAtirar (_,y1) (Jogo ([]:t) (Jogador (x2,y2) d b)) = vaiAtirar (0,y1+1) (Jogo t (Jogador (x2,y2) d b))
 vaiAtirar (x1,y1) (Jogo ((x:xs):t) (Jogador (x2,y2) Oeste b))
+ |x1 == x2-1 && y1 == y2 = x == Vazio && vaiAtirar (x1+1,y1) (Jogo (xs:t) (Jogador (x2,y2) Oeste b))
  |x1 == x2-1 && y1 == y2+1 = x == Vazio
  |otherwise = vaiAtirar (x1+1,y1) (Jogo (xs:t) (Jogador (x2,y2) Oeste b))
 vaiAtirar (x1,y1) (Jogo ((x:xs):t) (Jogador (x2,y2) Este b))
+ |x1 == x2+1 && y1 == y2 = x == Vazio && vaiAtirar (x1+1,y1) (Jogo (xs:t) (Jogador (x2,y2) Este b))
  |x1 == x2+1 && y1 == y2+1 = x == Vazio
  |otherwise = vaiAtirar (x1+1,y1) (Jogo (xs:t) (Jogador (x2,y2) Este b))
 @
@@ -518,6 +520,7 @@ certaColuna x1 (x2,y2) ([]:t) = certaColuna x1 (0,y2+1) t
 certaColuna x1 (x2,y2) ((x:xs):t)
  |x1 == x2 = (x,(x2,y2)):certaColuna x1 (x2+1,y2) (xs:t)
  |otherwise = certaColuna x1 (x2+1,y2) (xs:t)
+
 @
 -}
 
@@ -556,7 +559,3 @@ correrMovimentos = foldl moveJogador
 -}
 correrMovimentos :: Jogo -> [Movimento] -> Jogo
 correrMovimentos = foldl moveJogador
-
---random utilities
---[Vazio, Vazio, Vazio, Vazio, Vazio, Vazio, Bloco],[Vazio, Vazio, Vazio, Vazio, Vazio, Vazio, Bloco],[Porta, Vazio, Vazio, Vazio, Caixa, Vazio, Bloco],[Bloco, Bloco, Bloco, Bloco, Bloco, Bloco, Bloco]
--- [[Vazio,Vazio,Vazio,Vazio,Vazio,Bloco,Bloco,Bloco,Vazio,Vazio,Vazio,Vazio,Bloco,Bloco,Bloco,Bloco,Bloco,Bloco,Bloco,Bloco,Bloco,Vazio],[Vazio,Bloco,Bloco,Bloco,Bloco,Vazio,Vazio,Vazio,Bloco,Bloco,Bloco,Bloco,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio,Bloco],[Bloco,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio,Bloco],[Bloco,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio,Bloco],[Bloco,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio,Bloco],[Bloco,Vazio,Vazio,Vazio,Vazio,Vazio,Bloco,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio,Bloco],[Bloco,Vazio,Vazio,Vazio,Vazio,Vazio,Bloco,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio,Bloco],[Bloco,Vazio,Vazio,Vazio,Vazio,Vazio,Bloco,Caixa,Caixa,Caixa,Caixa,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio,Bloco],[Bloco,Porta,Vazio,Vazio,Vazio,Bloco,Bloco,Bloco,Bloco,Bloco,Bloco,Bloco,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio,Bloco],[Bloco,Bloco,Vazio,Bloco,Bloco,Bloco,Vazio,Vazio,Vazio,Vazio,Vazio,Bloco,Bloco,Vazio,Bloco,Vazio,Vazio,Vazio,Vazio,Vazio,Caixa,Bloco],[Vazio,Bloco,Vazio,Bloco,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio,Bloco,Vazio,Bloco,Bloco,Vazio,Vazio,Vazio,Caixa,Caixa,Bloco],[Vazio,Bloco,Vazio,Bloco,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio,Bloco,Vazio,Bloco,Bloco,Vazio,Vazio,Caixa,Caixa,Caixa,Bloco],[Vazio,Bloco,Bloco,Bloco,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio,Bloco,Vazio,Bloco,Bloco,Bloco,Bloco,Bloco,Bloco,Bloco,Bloco],[Vazio,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio,Bloco,Bloco,Bloco,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio,Vazio]]

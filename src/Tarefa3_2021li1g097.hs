@@ -46,7 +46,7 @@ instance Show Jogo where
 @
 mostrarJogoAux :: (Int,Int) -> Jogo -> String
 mostrarJogoAux (_,_) (Jogo [] _) = []
-mostrarJogoAux (x,y) (Jogo (m:ms) (Jogador c d b)) = 'descreveLinha' (0,y) (Jogador c d b) m ++ if null (mostrarJogoAux (0,y+1) (Jogo ms (Jogador c d b)))
+mostrarJogoAux (x,y) (Jogo (m:ms) (Jogador c d b)) = descreveLinha (0,y) (Jogador c d b) m ++ if null (mostrarJogoAux (0,y+1) (Jogo ms (Jogador c d b)))
                                                                                                      then []
                                                                                                      else "\n" ++ mostrarJogoAux (0,y+1) (Jogo ms (Jogador c d b))
 @
