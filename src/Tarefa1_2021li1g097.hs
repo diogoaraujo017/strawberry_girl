@@ -13,8 +13,7 @@ module Tarefa1_2021li1g097 where
 
 import LI12122
 import Language.Haskell.TH (charPrimL)
-import Generics.SYB (ConstrRep(CharConstr))
-import qualified Test.QuickCheck as Mapa
+
 
 {- | A função 'validaPotencialMapa' testa se o mapa é válido 
   utilizando as funções auxiliares ('validaPosicao','portaValida','caixaValida',
