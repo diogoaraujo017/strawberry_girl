@@ -161,39 +161,39 @@ drawWorld (Jogando l, jogo, imagens)
 -}
 drawWorld :: World -> Picture
 --------- Desenha o menu quando o jogador venceu o ultimo jogo
-drawWorld (VenceuUltimoJogo Menu1, jogo, imagens) = Pictures [Scale 2.2 2.2   (head(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail imagens))))))))))))))))))))))))))))))))] -------
-drawWorld (VenceuUltimoJogo Sair1, jogo, imagens) = Pictures [Scale 2.2 2.2   (head(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail imagens)))))))))))))))))))))))))))))))))] --------
+drawWorld (VenceuUltimoJogo Menu1, jogo, imagens) = Pictures [Scale 2.2 2.2 (imagens !! 31)] -------
+drawWorld (VenceuUltimoJogo Sair1, jogo, imagens) = Pictures [Scale 2.2 2.2 (imagens !! 32)] --------
 --------- Desenha o menu quando o jogador venceu o jogo
-drawWorld (VenceuJogo Next l, jogo, imagens) = Pictures [Scale 2.2 2.2   (head(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail imagens)))))))))))))))))))))))))))))))]--------- 
-drawWorld (VenceuJogo Menu l, jogo, imagens) = Pictures [Scale 2.2 2.2   (head(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail imagens))))))))))))))))))))))))))))))] ----------
+drawWorld (VenceuJogo Next l, jogo, imagens) = Pictures [Scale 2.2 2.2 (imagens !! 30)]--------- 
+drawWorld (VenceuJogo Menu l, jogo, imagens) = Pictures [Scale 2.2 2.2 (imagens !! 29)] ----------
 --------- Desenha o menu pausa
-drawWorld (Pausa Continuar l, jogo, imagens) = Pictures [ Scale 2.2 2.2  (head(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail imagens)))))))))))))))))]
-drawWorld (Pausa Menu3 l, jogo, imagens) = Pictures [Scale 2.2 2.2  (head(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail imagens))))))))))))))))]
+drawWorld (Pausa Continuar l, jogo, imagens) = Pictures [ Scale 2.2 2.2 (imagens !! 16)]
+drawWorld (Pausa Menu3 l, jogo, imagens) = Pictures [Scale 2.2 2.2  (imagens !! 15)]
 --------- Desenha o menu inicial 2
-drawWorld (Controlador2 Continuar1 l, jogo, imagens) = Pictures [ Scale 2.2 2.2  (head(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail imagens)))))))))))] 
-drawWorld (Controlador2 Novo l, jogo, imagens) = Pictures [ Scale 2.2 2.2  (head(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail imagens))))))))))))]  
-drawWorld (Controlador2 Mapas1 l, jogo, imagens) = Pictures [ Scale 2.2 2.2  (head(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail imagens)))))))))))))] 
-drawWorld (Controlador2 Sair2 l, jogo, imagens) = Pictures [ Scale 2.2 2.2  (head(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail imagens)))))))))))))))] 
-drawWorld (Controlador2 Controls2 l, jogo, imagens) = Pictures [ Scale 2.2 2.2  (head(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail imagens))))))))))))))]
+drawWorld (Controlador2 Continuar1 l, jogo, imagens) = Pictures [ Scale 2.2 2.2  (imagens !! 10)]
+drawWorld (Controlador2 Novo l, jogo, imagens) = Pictures [ Scale 2.2 2.2  (imagens !! 11)]
+drawWorld (Controlador2 Mapas1 l, jogo, imagens) = Pictures [ Scale 2.2 2.2  (imagens !! 12)]
+drawWorld (Controlador2 Sair2 l, jogo, imagens) = Pictures [ Scale 2.2 2.2  (imagens !! 14)]
+drawWorld (Controlador2 Controls2 l, jogo, imagens) = Pictures [ Scale 2.2 2.2  (imagens !! 13)]
 --------- Desenha o menu dos mapas 
-drawWorld (Mapa Level1 b m, jogo, imagens) = Pictures [ Scale 2.2 2.2  (head(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail imagens))))))))))))))))))]
-drawWorld (Mapa Level2 b m, jogo, imagens) = Pictures [ Scale 2.2 2.2  (head(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail imagens)))))))))))))))))))] 
-drawWorld (Mapa Level3 b m, jogo, imagens) = Pictures [ Scale 2.2 2.2  (head(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail imagens))))))))))))))))))))] 
-drawWorld (Mapa Level4 b m, jogo, imagens) = Pictures [ Scale 2.2 2.2  (head(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail imagens)))))))))))))))))))))]
-drawWorld (Mapa Level5 b m, jogo, imagens) = Pictures [ Scale 2.2 2.2  (head(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail imagens))))))))))))))))))))))] 
-drawWorld (Mapa Level6 b m, jogo, imagens) = Pictures [ Scale 2.2 2.2  (head(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail imagens)))))))))))))))))))))))]
-drawWorld (Mapa Level7 b m, jogo, imagens) = Pictures [ Scale 2.2 2.2  (head(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail imagens))))))))))))))))))))))))]
-drawWorld (Mapa Level8 b m, jogo, imagens) = Pictures [ Scale 2.2 2.2  (head(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail imagens)))))))))))))))))))))))))]
-drawWorld (Mapa Level9 b m, jogo, imagens) = Pictures [ Scale 2.2 2.2  (head(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail imagens))))))))))))))))))))))))))]
-drawWorld (Mapa Level10 b m, jogo, imagens) = Pictures [ Scale 2.2 2.2 (head(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail imagens)))))))))))))))))))))))))))]
-drawWorld (Mapa Menu2 b m, jogo, imagens) = Pictures [ Scale 2.2 2.2   (head(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail imagens))))))))))))))))))))))))))))]
+drawWorld (Mapa Level1 b m, jogo, imagens) = Pictures [ Scale 2.2 2.2 (imagens !! 17)]
+drawWorld (Mapa Level2 b m, jogo, imagens) = Pictures [ Scale 2.2 2.2 (imagens !! 18)] 
+drawWorld (Mapa Level3 b m, jogo, imagens) = Pictures [ Scale 2.2 2.2 (imagens !! 19)] 
+drawWorld (Mapa Level4 b m, jogo, imagens) = Pictures [ Scale 2.2 2.2 (imagens !! 20)]
+drawWorld (Mapa Level5 b m, jogo, imagens) = Pictures [ Scale 2.2 2.2 (imagens !! 21)] 
+drawWorld (Mapa Level6 b m, jogo, imagens) = Pictures [ Scale 2.2 2.2 (imagens !! 22)]
+drawWorld (Mapa Level7 b m, jogo, imagens) = Pictures [ Scale 2.2 2.2 (imagens !! 23)]
+drawWorld (Mapa Level8 b m, jogo, imagens) = Pictures [ Scale 2.2 2.2 (imagens !! 24)]
+drawWorld (Mapa Level9 b m, jogo, imagens) = Pictures [ Scale 2.2 2.2 (imagens !! 25)]
+drawWorld (Mapa Level10 b m, jogo, imagens) = Pictures [ Scale 2.2 2.2 (imagens !! 26)]
+drawWorld (Mapa Menu2 b m, jogo, imagens) = Pictures [ Scale 2.2 2.2 (imagens !! 27)]
 --------- Desenha o menu inicial 
-drawWorld (Controlador Jogar, jogo, imagens) = Pictures [ Scale 2.2 2.2 (head(tail(tail(tail(tail(tail(tail imagens)))))))] 
-drawWorld (Controlador Mapas, jogo, imagens) = Pictures [ Scale 2.2 2.2 (head(tail(tail(tail(tail(tail(tail(tail imagens))))))))]
-drawWorld (Controlador Controls, jogo, imagens) = Pictures [ Scale 2.2 2.2 (head(tail(tail(tail(tail(tail(tail(tail(tail imagens)))))))))]
-drawWorld (Controlador Sair, jogo, imagens) = Pictures [ Scale 2.2 2.2  (head(tail(tail(tail(tail(tail(tail(tail(tail(tail imagens))))))))))]
+drawWorld (Controlador Jogar, jogo, imagens) = Pictures [ Scale 2.2 2.2 (imagens !! 6)]
+drawWorld (Controlador Mapas, jogo, imagens) = Pictures [ Scale 2.2 2.2 (imagens !! 7)]
+drawWorld (Controlador Controls, jogo, imagens) = Pictures [ Scale 2.2 2.2 (imagens !! 8)]
+drawWorld (Controlador Sair, jogo, imagens) = Pictures [ Scale 2.2 2.2  (imagens !! 9)]
 --------- Desenha o menu dos controlos
-drawWorld (Controls3 b m, jogo, imagens) = Pictures [Scale 2.2 2.2 (head(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail(tail imagens)))))))))))))))))))))))))))))] -------------------------
+drawWorld (Controls3 b m, jogo, imagens) = Pictures [Scale 2.2 2.2 (imagens !! 28)] -------------------------
 --------- Desenha o jogando
 drawWorld (Jogando l, jogo, imagens) 
   | l == Level1 = Translate 90 (-250) $ Scale 1.4 1.4 (Pictures drawing)
