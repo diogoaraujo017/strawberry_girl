@@ -38,7 +38,8 @@ movimentosPossiveis (Jogo (p : ps) (Jogador (x, y) d b))
                                                                              then Trepar : [InterageCaixa | podePegar (0,0) (Jogo (p:ps) (Jogador (x,y) d b))]
                                                                              else [InterageCaixa | podePegar (0,0) (Jogo (p:ps) (Jogador (x,y) d b))]
                    else []
-  | not (estaPreso (0,0) (Jogo (p:ps) (Jogador (x,y) d b))) = if d == Oeste
+  | otherwise = if not (estaPreso (0,0) (Jogo (p:ps) (Jogador (x,y) d b)))  
+                                                     then if d == Oeste
                                                                     then if verificaLadosCaixa (0,0) (Jogo (p:ps) (Jogador (x,y) d b)) AndarEsquerda
                                                                              then [AndarDireita,AndarEsquerda] ++ if podeTreparCaixa (0,0) (Jogo (p:ps) (Jogador (x,y) d b))
                                                                                                                           then Trepar : [InterageCaixa | podeLargar (0,0) (Jogo (p:ps) (Jogador (x,y) d b))]
@@ -53,7 +54,7 @@ movimentosPossiveis (Jogo (p : ps) (Jogador (x, y) d b))
                                                                              else AndarEsquerda : if podeTreparCaixa (0,0) (Jogo (p:ps) (Jogador (x,y) d b))
                                                                                                                        then Trepar : [InterageCaixa | podeLargar (0,0) (Jogo (p:ps) (Jogador (x,y) d b))]
                                                                                                                        else [InterageCaixa | podeLargar (0,0) (Jogo (p:ps) (Jogador (x,y) d b))]
-  | otherwise = []
+                                                     else []
 
 
 separaListas :: [Movimento] -> [[Movimento]]
