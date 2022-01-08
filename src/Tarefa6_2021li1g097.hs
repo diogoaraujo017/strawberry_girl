@@ -66,7 +66,37 @@ constroiListasMov :: [Movimento]      -- lista que queresmos aumentar
                     -> [[Movimento]]
 constroiListasMov l = map (\ y -> l ++ [y])
 
+----
+dropMov :: Movimento -> [Movimento] -> [Movimento]
+dropMov m [] = []
+dropMov m (x:xs) = if elem m (x:xs) then if m == x
+                                            then xs
+                                            else dropMov m xs 
+                                    else x:xs
 
+
+removeMovimentos :: [Movimento] -> [Movimento] -> Jogo -> [Movimento] 
+removeMovimentos l [] _ = []
+removeMovimentos l m (Jogo (p : ps) (Jogador (x, y) d b)) = if (!!) l ((length l)-1) == Trepar 
+                                                                    then if d == Oeste
+                                                                             then dropMov AndarDireita m
+                                                                             else dropMov AndarEsquerda m
+                                                                    else if length l >= 3
+                                                                              then if (!!) l ((length l)-1) == AndarEsquerda && (!!) l ((length l)-2) == AndarEsquerda && (!!) l ((length l)-3) == AndarEsquerda
+                                                                                    then dropMov AndarDireita m
+                                                                                    else if (!!) l ((length l)-1) == AndarDireita && (!!) l ((length l)-1) == AndarDireita && (!!) l ((length l)-3) == AndarDireita 
+                                                                                             then dropMov AndarEsquerda m
+                                                                                             else m
+                                                                              else if (!!) l ((length l)-1) == InterageCaixa 
+                                                                                        then dropMov InterageCaixa m
+                                                                                        else if length l >= 2
+                                                                                                  then if (!!) l ((length l)-1) == AndarDireita  && (!!) l ((length l)-2) == AndarEsquerda
+                                                                                                     then dropMov AndarDireita m
+                                                                                                     else m
+                                                                                                  else if (!!) l ((length l)-1) == AndarEsquerda  && (!!) l ((length l)-2) == AndarDireita
+                                                                                                            then dropMov AndarEsquerda m
+                                                                                                            else m
+ 
 resolveJogo :: Int -> Jogo -> Maybe [Movimento]
 resolveJogo i jogo
  |i <= 0 = Nothing
@@ -75,17 +105,14 @@ resolveJogo i jogo
 combina :: Int -> [[Movimento]] -> Jogo -> [[Movimento]]
 combina 0 m _ = m
 combina _ [] _ = []
-combina i (x:xs) jogo = combina (i-1) (constroiListasMov x (movimentosPossiveis (correrMovimentos jogo x ))) jogo ++ resto
+combina i (x:xs) jogo = combina (i-1) (constroiListasMov x (removeMovimentos x (movimentosPossiveis (correrMovimentos jogo x )) (correrMovimentos jogo x ))) jogo ++ resto
  where resto = combina i xs jogo
 
 procuraPath :: [[Movimento]] -> Jogo -> Maybe [Movimento]
 procuraPath [] j = Nothing
 procuraPath (x:xs) j
- |coordPorta2 j x = Just x
+ |coordPorta (0,0) (correrMovimentos j x) = Just x
  |otherwise = procuraPath xs j
-
-coordPorta2 :: Jogo -> [Movimento] -> Bool
-coordPorta2 j m = coordPorta (0,0) (correrMovimentos j m)
 
 estaPreso :: (Int,Int) -> Jogo ->  Bool
 estaPreso (x1,y1) (Jogo ([]:ps) (Jogador (x,y) d b)) = estaPreso (0,y1+1) (Jogo ps (Jogador (x,y) d b))
