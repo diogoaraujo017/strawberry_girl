@@ -69,45 +69,72 @@ constroiListasMov l = map (\ y -> l ++ [y])
 ----
 dropMov :: Movimento -> [Movimento] -> [Movimento]
 dropMov m [] = []
-dropMov m (x:xs) = if elem m (x:xs) then if m == x
-                                            then xs
-                                            else dropMov m xs 
-                                    else x:xs
+dropMov m (x:xs) 
+ |m == x = xs
+ |otherwise = x:dropMov m xs
 
 
-removeMovimentos :: [Movimento] -> [Movimento] -> Jogo -> [Movimento] 
-removeMovimentos l [] _ = []
-removeMovimentos l m (Jogo (p : ps) (Jogador (x, y) d b)) = if (!!) l ((length l)-1) == Trepar 
+removeMovimentosTrepar :: [Movimento] -> [Movimento] -> Jogo -> [Movimento] 
+removeMovimentosTrepar l [] _ = []
+removeMovimentosTrepar l m (Jogo (p : ps) (Jogador (x, y) d b)) = if (!!) l ((length l)-1) == Trepar 
                                                                     then if d == Oeste
                                                                              then dropMov AndarDireita m
                                                                              else dropMov AndarEsquerda m
-                                                                    else if length l >= 3
-                                                                              then if (!!) l ((length l)-1) == AndarEsquerda && (!!) l ((length l)-2) == AndarEsquerda && (!!) l ((length l)-3) == AndarEsquerda
+                                                                    else m
+                                                                      
+removeMovimentosE :: [Movimento] -> [Movimento] -> Jogo -> [Movimento] 
+removeMovimentosE l [] _ = []
+removeMovimentosE l m (Jogo (p : ps) (Jogador (x, y) d b)) = if length l >= 3
+                                                                    then if (!!) l ((length l)-1) == AndarEsquerda && (!!) l ((length l)-2) == AndarEsquerda && (!!) l ((length l)-3) == AndarEsquerda
                                                                                     then dropMov AndarDireita m
-                                                                                    else if (!!) l ((length l)-1) == AndarDireita && (!!) l ((length l)-1) == AndarDireita && (!!) l ((length l)-3) == AndarDireita 
+                                                                                    else m
+                                                                    else m
+
+
+removeMovimentosD :: [Movimento] -> [Movimento] -> Jogo -> [Movimento] 
+removeMovimentosD l [] _ = []
+removeMovimentosD l m (Jogo (p : ps) (Jogador (x, y) d b)) =if length l >= 3
+                                                                   then if (!!) l ((length l)-1) == AndarDireita  && (!!) l ((length l)-2) == AndarDireita && (!!) l ((length l)-3) == AndarDireita 
                                                                                              then dropMov AndarEsquerda m
                                                                                              else m
-                                                                              else if (!!) l ((length l)-1) == InterageCaixa 
+                                                                   else m
+
+removeMovimentosC :: [Movimento] -> [Movimento] -> Jogo -> [Movimento] 
+removeMovimentosC l [] _ = []
+removeMovimentosC l m (Jogo (p : ps) (Jogador (x, y) d b)) = if (!!) l ((length l)-1) == InterageCaixa 
                                                                                         then dropMov InterageCaixa m
-                                                                                        else if length l >= 2
-                                                                                                  then if (!!) l ((length l)-1) == AndarDireita  && (!!) l ((length l)-2) == AndarEsquerda
-                                                                                                     then dropMov AndarDireita m
-                                                                                                     else m
-                                                                                                  else if (!!) l ((length l)-1) == AndarEsquerda  && (!!) l ((length l)-2) == AndarDireita
+                                                                                        else m
+
+removeMovimentosE1 :: [Movimento] -> [Movimento] -> Jogo -> [Movimento] 
+removeMovimentosE1 l [] _ = []
+removeMovimentosE1 l m (Jogo (p : ps) (Jogador (x, y) d b)) = if length l >= 2
+                                                                        then if (!!) l ((length l)-1) == AndarDireita  && (!!) l ((length l)-2) == AndarEsquerda
+                                                                                  then dropMov AndarDireita m
+                                                                                  else m
+                                                                        else m
+
+
+removeMovimentosD1 :: [Movimento] -> [Movimento] -> Jogo -> [Movimento] 
+removeMovimentosD1 l [] _ = []
+removeMovimentosD1 l m (Jogo (p : ps) (Jogador (x, y) d b)) = if length l >= 2
+                                                                              then if (!!) l ((length l)-1) == AndarEsquerda  && (!!) l ((length l)-2) == AndarDireita
                                                                                                             then dropMov AndarEsquerda m
                                                                                                             else m
- 
+                                                                              else m
+     
 resolveJogo :: Int -> Jogo -> Maybe [Movimento]
 resolveJogo i jogo
  |i <= 0 = Nothing
  |otherwise = procuraPath (combina i (separaListas (movimentosPossiveis jogo)) jogo) jogo
 
 combina :: Int -> [[Movimento]] -> Jogo -> [[Movimento]]
-combina 0 m _ = m
+combina 1 m _ = m
 combina _ [] _ = []
-combina i (x:xs) jogo = combina (i-1) (constroiListasMov x (removeMovimentos x (movimentosPossiveis (correrMovimentos jogo x )) (correrMovimentos jogo x ))) jogo ++ resto
+combina i (x:xs) jogo = combina (i-1) (constroiListasMov x (removeMovimentosE1 x (removeMovimentosD1 x (removeMovimentosC x (removeMovimentosD x (removeMovimentosE x (removeMovimentosTrepar x (movimentosPossiveis y) y)y)y)y)y)y)) jogo ++ resto
  where resto = combina i xs jogo
+       y = (correrMovimentos jogo x )
 
+      
 procuraPath :: [[Movimento]] -> Jogo -> Maybe [Movimento]
 procuraPath [] j = Nothing
 procuraPath (x:xs) j
