@@ -1,0 +1,157 @@
+### Failure in: 0:1:Movimento Trepar no Jogo 02
+tests/Fase1.hs:34
+expected:        
+    C X
+      X
+P X C X
+XXXXXXX
+ but got:        
+      X
+    < X
+P X C X
+XXXXXXX
+### Failure in: 0:4:Movimento Trepar para Este contra parede
+tests/Fase1.hs:34
+expected:        
+      X
+      X
+P X C X
+XXXXXXX
+ but got:        
+      X
+      X
+P X C>X
+XXXXXXX
+### Failure in: 0:8:Movimento Trepar para Oeste para cima de Caixa com Caixa
+tests/Fase1.hs:34
+expected:        
+    C X
+      X
+P X C X
+XXXXXXX
+ but got:        
+      X
+    < X
+P X C X
+XXXXXXX
+### Failure in: 0:9:Movimento Trepar para Este para cima de Caixa com Caixa
+tests/Fase1.hs:34
+expected:        
+    C X
+      X
+P X C X
+XXXXXXX
+ but got:        
+      X
+    > X
+P X C X
+XXXXXXX
+### Failure in: 0:10:Movimento Trepar para Oeste com Caixa bloqueda por bloco
+tests/Fase1.hs:34
+expected:        
+  C   X
+      X
+P X   X
+XXXXXXX
+ but got:        
+  X   X
+      X
+P X<  X
+XXXXXXX
+### Error in:   0:12:Movimento AndarEsquerda bloqueado pela caixa contra bloco
+src/Tarefa4_2021li1g097.hs:(222,1)-(230,149): Non-exhaustive patterns in function naoBlocoCimaJogador
+
+CallStack (from HasCallStack):
+  error, called at tests/Fase1.hs:27:29 in main:Main
+### Failure in: 0:27:Movimento levanta Caixa
+tests/Fase1.hs:34
+expected:  C X  
+P>    
+XXXXXX
+ but got:    X  
+P>    
+XXXXXX
+### Failure in: 0:29:Movimento larga Caixa entre blocos
+tests/Fase1.hs:34
+expected:        
+  X   X
+      X
+P C<  X
+XXXXXXX
+ but got:        
+  X   X
+  C   X
+P X<  X
+XXXXXXX
+### Failure in: 0:34:Movimento largar Caixa para baixo de Porta
+tests/Fase1.hs:34
+expected:         
+ C<    X
+ PX   CX
+  X  CCX
+XXXXXXXX
+ but got:         
+  <    X
+ PX   CX
+ CX  CCX
+XXXXXXXX
+### Error in:   0:35:Movimento tenta levantar Caixa bloqueada por bloco
+src/Tarefa4_2021li1g097.hs:(194,1)-(202,149): Non-exhaustive patterns in function naoBlocoCimaCaixaOeste
+
+CallStack (from HasCallStack):
+  error, called at tests/Fase1.hs:27:29 in main:Main
+### Failure in: 0:36:Movimento levanta Caixa
+tests/Fase1.hs:34
+expected:        
+      X
+P    CX
+  X  <X
+XXXXXXX
+ but got:        
+      X
+P     X
+  X  <X
+XXXXXXX
+### Failure in: 0:38:Resolve Jogo 07
+tests/Fase1.hs:34
+expected:        
+    C X
+P  C  X
+  X   X
+XXXXXXX
+ but got:        
+      X
+P     X
+C X C X
+XXXXXXX
+### Failure in: 0:39:Resolve Jogo 03
+tests/Fase1.hs:34
+expected: X                  X
+X                  X
+X                  X
+X                  X
+X       C          X
+X   X      CX   C  X
+XP  X<      XC     X
+XXXXXXXCXXXXXXXXXXXX
+ but got: X                  X
+X                  X
+X                  X
+X                  X
+X                  X
+X   X       X      X
+XP  XC  X   XC     X
+XXXXXXXXXXXXXXXXXXXX
+### Failure in: 0:40:Passear no Jogo 09
+tests/Fase1.hs:34
+expected:         
+ C     X
+ PX   CX
+< X  CCX
+XXXXXXXX
+ but got:         
+       X
+ PX   CX
+< X  CCX
+XXXXXXXX
+Cases: 41  Tried: 41  Errors: 2  Failures: 12

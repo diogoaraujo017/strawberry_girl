@@ -12,11 +12,8 @@ Módulo para a realização da Tarefa 1 do projeto de LI1 em 2021/22.
 module Tarefa1_2021li1g097 where
 
 import LI12122
-import Language.Haskell.TH (charPrimL)
-import Generics.SYB (ConstrRep(CharConstr))
-import qualified Test.QuickCheck as Mapa
 
-{- | A função 'validaPotencialMapa' testa se o mapa é válido 
+{- | A função 'validaPotencialMapa' testa se o mapa é válido
   utilizando as funções auxiliares ('validaPosicao','portaValida','caixaValida',
   'existeVazio','chaoContinuo','xMax' e 'maiorY') que estão posteriormente defenidas
   ,que verificam todos os parâmetros a que uma mapa deve obdecer
@@ -41,9 +38,9 @@ validaPotencialMapa [] = False
 validaPotencialMapa m = validaPosicao m && portaValida m && caixaValida m && existeVazio m && chaoContinuo (xMax m) (maiorY m) m
 
 {- | A função 'validaPosicao' testa se existem peças que têm as mesmas coordenadas.
-  Se existirem coordenadas iguais o mapa diz-se inválido pelo que a função retorna o 
+  Se existirem coordenadas iguais o mapa diz-se inválido pelo que a função retorna o
   valor False.
-  
+
   Esta função utiliza a função 'ordenaPecas', posteriormente defenida.
 
 == Exemplos de utilização:
@@ -73,7 +70,7 @@ validaPosicao l
  |otherwise = validaPosicao ((p2,(x2,y2)):t)
  where ((p1,(x1,y1)):(p2,(x2,y2)):t) = ordenaPecas l
 
-{- | A função 'portaValida' testa se existe apenas uma porta usando a função 
+{- | A função 'portaValida' testa se existe apenas uma porta usando a função
   'existePorta' posteriormente defenida.
 
 == Exemplos de utilização:
@@ -86,7 +83,7 @@ False
 == Código:
 @
 portaValida :: [(Peca, Coordenadas)] -> Bool
-portaValida m = 'existePorta' m == 1 
+portaValida m = 'existePorta' m == 1
 @
 -}
 portaValida :: [(Peca, Coordenadas)] -- ^Assume-se que nunca recebe uma lista vazia
@@ -117,12 +114,12 @@ existePorta ((Porta, (x,y)):t) = 1 + existePorta t
 existePorta ((_, (x,y)):t) = existePorta t
 
 {- | A função 'caixaValida' verifica se as caixas presentes
-  num mapa se encontram bem defenidas, ou seja, esta função 
+  num mapa se encontram bem defenidas, ou seja, esta função
   vai verificar se as caixas presentes no mapa têm um bloco, uma porta
-  ou uma caixa debaixo das mesmas, dando output False se existirem 
+  ou uma caixa debaixo das mesmas, dando output False se existirem
   caixas a flutuar.
-  
-  Esta função utiliza a função 'ordenaPecas' 
+
+  Esta função utiliza a função 'ordenaPecas'
   posteriormente defenida, para ordenar o mapa.
 
 == Exemplos de utilização:
@@ -189,7 +186,7 @@ True
 @
 existeVazio1 :: [(Peca, Coordenadas)] -> Bool
 existeVazio1 [] = False
-existeVazio1 ((Vazio,(x,y)):t) = True 
+existeVazio1 ((Vazio,(x,y)):t) = True
 existeVazio1 ((_,(_,_)):t) = existeVazio1 t
 @
 -}
@@ -216,7 +213,7 @@ yMax [(p1,(x1,y1))] = y1
 yMax ((p1,(x1,y1)):(p2,(x2,y2)):t)
  |y1 >= y2 = yMax ((p1,(x1,y1)):t)
  |otherwise = yMax ((p2,(x2,y2)):t)
-@ 
+@
 -}
 yMax :: [(Peca, Coordenadas)] -> Int
 yMax [] = 0
@@ -253,18 +250,18 @@ ordenaPecas (h:t) = inserePeca h (ordenaPecas t)
                |y1 < y2 || y1 == y2 && x1 <= x2 = (p1,(x1,y1)):(p2,(x2,y2)):z
 
 {- | A função 'chaoContinuo' verifica se o chao do mapa
-  é contínuo, ou seja, verifica se não existe nenhuma falha 
+  é contínuo, ou seja, verifica se não existe nenhuma falha
   no chao do mapa.
-  
+
   Vai começar no ultimo bloco da primeira coluna (no bloco em x=0 com o maior y) e a partir desse bloco
-  vai verificar se existe um bloco a sua direita, por cima, embaixo 
+  vai verificar se existe um bloco a sua direita, por cima, embaixo
   ou na diagonal,se verificar que existe um bloco em alguma dessas direções a função elemina o bloco em que
-  estavamos e testa para o seguinte bloco.Ao chegar ao ultimo bloco a função da output a 
+  estavamos e testa para o seguinte bloco.Ao chegar ao ultimo bloco a função da output a
   True. Se houver algum bloco que falha ao longo do caminha a função verifica que esse bloco não
   existe e dá output a False.
-  
-  Esta função utiliza as funções 'ordenaPecas' e 'removeCertaPeca' 
-  
+
+  Esta função utiliza as funções 'ordenaPecas' e 'removeCertaPeca'
+
 
 == Exemplos de utilização:
 
@@ -276,7 +273,7 @@ False
 == Código:
 @
 chaoContinuo :: Int -> (Peca,Coordenadas) -> [(Peca,Coordenada)] -> Bool
-chaoContinuo k (Bloco,(x1,y1)) [] = x1 == k 
+chaoContinuo k (Bloco,(x1,y1)) [] = x1 == k
 chaoContinuo k (Bloco,(x1,y1)) l
   |x1 == k = True
   |elem (Bloco,(x1+1,y1)) w = chaoContinuo k (Bloco,(x1+1,y1)) ('removeCertaPeca' (Bloco,(x1+1,y1)) w)
@@ -315,7 +312,7 @@ chaoContinuo k (Bloco,(x1,y1)) l
 @
 removeCertaPeca :: (Peca,Coordenadas) -> [(Peca, Coordenadas)] -> [(Peca, Coordenadas)]
 removeCertaPeca (_,_) [] = []
-removeCertaPeca p1 (p2:ps) 
+removeCertaPeca p1 (p2:ps)
  |p1 == p2 = ps
  |otherwise = p2:removeCertaPeca p1 ps
 @
@@ -393,7 +390,7 @@ maiorY l = last t
  where t = colunaUmBlocos l
 @
 -}
-maiorY :: [(Peca, Coordenadas)]     -- ^Nunca recebe lista vazia 
+maiorY :: [(Peca, Coordenadas)]     -- ^Nunca recebe lista vazia
           ->  (Peca, Coordenadas)   -- ^Resultado
 maiorY [h] = h
 maiorY l = last t
