@@ -1,0 +1,36 @@
+2021li1g097-0.1.0.0: unregistering (local file changes: 2021li1g097.cabal src/LI12122.hs src/Tarefa1_2021li1g097.hs src/Tarefa2_2021li1g097.hs src/Tarefa...)
+2021li1g097> configure (lib)
+Configuring 2021li1g097-0.1.0.0...
+2021li1g097> build (lib)
+Preprocessing library for 2021li1g097-0.1.0.0..
+Building library for 2021li1g097-0.1.0.0..
+[1 of 5] Compiling LI12122
+[2 of 5] Compiling Tarefa1_2021li1g097
+[3 of 5] Compiling Tarefa2_2021li1g097
+[4 of 5] Compiling Tarefa3_2021li1g097
+[5 of 5] Compiling Tarefa4_2021li1g097
+2021li1g097> haddock
+Preprocessing library for 2021li1g097-0.1.0.0..
+Running Haddock on library for 2021li1g097-0.1.0.0..
+Haddock coverage:
+  92% ( 11 / 12) in 'LI12122'
+  Missing documentation for:
+    Mapa (src/LI12122.hs:28)
+ 100% ( 15 / 15) in 'Tarefa1_2021li1g097'
+ 100% ( 11 / 11) in 'Tarefa2_2021li1g097'
+Warning: 'descreverLinha' is out of scope.
+    If you qualify the identifier, haddock can try to link it anyway.
+ 100% (  3 /  3) in 'Tarefa3_2021li1g097'
+ 100% ( 17 / 17) in 'Tarefa4_2021li1g097'
+Documentation created:
+.stack-work/dist/x86_64-linux-tinfo6/Cabal-3.4.0.0/doc/html/2021li1g097/index.html,
+.stack-work/dist/x86_64-linux-tinfo6/Cabal-3.4.0.0/doc/html/2021li1g097/2021li1g097.txt
+2021li1g097> copy/register
+Installing library in /home/nelson/Documents/LI1/projectos/2021li1g097/.stack-work/install/x86_64-linux-tinfo6/e619e721cfd93d212e783f07e0e112de47ec2ce9746d976e44e04c843f2a0455/9.0.1/lib/x86_64-linux-ghc-9.0.1/2021li1g097-0.1.0.0-1J5yNaWgBgB4b69HuQOA50
+Registering library for 2021li1g097-0.1.0.0..
+Updating Haddock index for local packages in
+/home/nelson/Documents/LI1/projectos/2021li1g097/.stack-work/install/x86_64-linux-tinfo6/e619e721cfd93d212e783f07e0e112de47ec2ce9746d976e44e04c843f2a0455/9.0.1/doc/index.html
+Updating Haddock index for local packages and dependencies in
+/home/nelson/Documents/LI1/projectos/2021li1g097/.stack-work/install/x86_64-linux-tinfo6/e619e721cfd93d212e783f07e0e112de47ec2ce9746d976e44e04c843f2a0455/9.0.1/doc/all/index.html
+Haddock index for snapshot packages already up to date at:
+/home/nelson/.stack/snapshots/x86_64-linux-tinfo6/e619e721cfd93d212e783f07e0e112de47ec2ce9746d976e44e04c843f2a0455/9.0.1/doc/index.html
