@@ -1,28 +1,26 @@
-# Laboratórios de Informática I
+# > Strawberry Girl <
 
-## Repositório
+ Embark on a delightful puzzle adventure with 'Strawberry Girl'! Inspired by the classic game 'Block Dude', this game follows a brave girl on a mission to capture a    scrumptious strawberry. To succeed, you must navigate through a series of intricate mazes by moving blocks around to clear a path. But watch out for tricky obstacles    that may stand in your way! Can you help Strawberry Girl overcome these challenges and reach her tasty reward? Play now and test your puzzle-solving skills!
 
-O sistema de controlo de versões utilizado é o git. O repositório encontra-se disponível [nesta organização](https://gitlab.com/uminho-di/li1/2122). Para obter o repositório na sua máquina, garanta que tem a chave pública SSH adicionada na sua conta do GitLab com o email instituicional ([User Settings/SSH Keys](https://gitlab.com/-/profile/keys)), depois basta efetuar clone ao repositório.
+![Screenshot](image.jpg)
 
-```bash
-$ git clone git@gitlab.com:uminho-di/li1/2122/2021li1g097.git
-$ cd 2021li1g097 
-```
+# > Developers <
 
-## Testes
+   Diogo Pinto Araújo - University of Minho
 
-O projecto contém testes unitários escritos usando a biblioteca [HUnit](https://hackage.haskell.org/package/HUnit). Os testes podem ser executados da seguinte forma.
+# > Info Block Dude < 
 
-```bash
-$ ghci -i="src" -i="tests" tests/Tests.hs
->>> runTestsT1 -- Correr os testes tarefa 1
->>> runTestsT2 -- Correr os testes tarefa 2
->>> runTestsT3 -- Correr os testes tarefa 3
->>> runTestsT4 -- Correr os testes tarefa 4
->>> runAllTests -- Correr todos os testes
-```
+   Block Dude is a classic puzzle game originally released for the TI-83 graphing calculator in 1994. The objective of the game is to navigate a character named Block      Dude through a series of increasingly difficult rooms by moving blocks and climbing ladders.
 
-## Grupo 97
+   The game consists of 11 levels, each with multiple rooms. In each room, the player must move blocks around to create a path for Block Dude to reach the exit. Block      Dude can push and pull blocks, as well as climb ladders and jump from certain heights.
 
-- **A100649** Mário Cunha;
-- **A100544** Diogo Araújo ;
+   As the game progresses, new challenges are introduced, such as enemies that must be avoided or defeated, switches that activate doors or move blocks, and blocks with    special properties, such as being immune to gravity or explosive.
+
+   The game's simple yet challenging gameplay and clever level design made it a hit among TI-83 users and it has since been ported to various other platforms, including    mobile devices and web browsers.
+
+
+## > Contributing <
+
+   Pull requests are welcome. For major changes, please open an issue first
+to discuss what you would like to change.
+
